@@ -1,12 +1,17 @@
 export const ASSET_KEYS = Object.freeze({
   SQUARES: 'SQUARES',
   BACKGROUND: 'BACKGROUND',
+  PROGRESS_BAR: 'PROGRESS_BAR',
 });
 
 export const IMAGE_ASSETS = [
   {
     assetKey: ASSET_KEYS.BACKGROUND,
     path: 'assets/images/background.png',
+  },
+  {
+    assetKey: ASSET_KEYS.PROGRESS_BAR,
+    path: 'assets/images/progress_bar.png',
   },
 ];
 
