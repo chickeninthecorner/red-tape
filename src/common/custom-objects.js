@@ -7,7 +7,7 @@ export class Item extends Phaser.GameObjects.Container {
 	constructor(scene, x, y, color, number, letter) {
 		super(scene, x - 500, y);
 		this.scene = scene;
-		
+
 		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.SQUARES, scene.color).setScale(0.875);
 		this.spriteObject.rotation += Phaser.Math.FloatBetween(-0.5, 0.5);
 		
@@ -131,19 +131,30 @@ export class RejectButton extends Phaser.GameObjects.Container {
 }
 
 
-export class RedFlash extends Phaser.GameObjects.Container {
+export class Flash extends Phaser.GameObjects.Container {
 	MAX_TIME = 1 * 1000;
 
-	constructor(scene, x, y) {
+	constructor(scene, x, y, type) {
 		super(scene, x, y);
 		this.scene = scene;
 
-		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.RED_FLASH);
+		let frame;
+		let text;
+		switch (type) {
+			case "wrong":
+				frame = "wrong";
+				text = "INCORRECT";
+				break;
+			case "newRule":
+				frame = "newRule";
+				text = "NEW RULE";
+		}
 
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.FLASHES, frame);
 		this.textObject = scene.add.text(
 			0, 
 			0, 
-			"INCORRECT", 
+			text, 
 			{
 				fontFamily: "Tengoku", 
 				fontSize: 96, 

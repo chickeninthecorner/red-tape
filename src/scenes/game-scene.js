@@ -1,4 +1,4 @@
-import { Item, AcceptButton, RejectButton, RedFlash } from '../common/custom-objects.js';
+import { Item, AcceptButton, RejectButton, Flash } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 import { RuleList } from '../common/rulelist.js';
@@ -65,7 +65,12 @@ export class GameScene extends Phaser.Scene {
         // callback: this.onTimerComplete,
         // callbackScope: this
     });
-    this.timerTextObject = this.add.text(this.scale.width / 4, 48, this.timer.getRemainingSeconds(), {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"}).setOrigin(0.5);
+    this.timerTextObject = this.add.text(64, 32, this.timer.getRemainingSeconds(), {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"});
+    
+    this.score = 0;
+    this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 0);
+
+
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
 
     this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
@@ -84,15 +89,19 @@ export class GameScene extends Phaser.Scene {
 
   evaluate(answer) {
     if (answer == this.correctAction) {
+      this.score += 10;
+      this.scoreTextObject.text = this.score;
+
       this.timer.reset({
           delay: Math.min(this.timer.getRemaining() + this.TIME_REWARD, this.MAX_TIME),
       });
 
       this.createNewItem();
     } else {
-      const flash = new RedFlash(this, this.scale.width / 4, this.scale.height / 2).setDepth(1);;
+      const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(1);;
       this.add.existing(flash);
       this.objects.push(flash);
+
       this.timer.reset({
           delay: this.timer.getRemaining() - this.TIME_PENALTY,
       });

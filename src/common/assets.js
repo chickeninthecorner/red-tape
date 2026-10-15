@@ -4,7 +4,7 @@ export const ASSET_KEYS = Object.freeze({
   PROGRESS_BAR: 'PROGRESS_BAR',
   REJECT_BUTTON: 'REJECT_BUTTON',
   ACCEPT_BUTTON: 'ACCEPT_BUTTON',
-  RED_FLASH: 'RED_FLASH',
+  FLASHES: 'FLASHES',
 });
 
 export const IMAGE_ASSETS = [
@@ -24,10 +24,6 @@ export const IMAGE_ASSETS = [
     assetKey: ASSET_KEYS.ACCEPT_BUTTON,
     path: 'assets/images/accept_button.png',
   },
-  {
-    assetKey: ASSET_KEYS.RED_FLASH,
-    path: 'assets/images/red_flash.png',
-  },
 ];
 
 export const TEXTURE_ATLAS_ASSETS = [
@@ -35,5 +31,10 @@ export const TEXTURE_ATLAS_ASSETS = [
     assetKey: ASSET_KEYS.SQUARES,
     textureURL: 'assets/images/square_spritesheet.png',
     atlasURL: 'assets/images/square_spritesheet.json',
+  },
+  {
+    assetKey: ASSET_KEYS.FLASHES,
+    textureURL: 'assets/images/flash_spritesheet.png',
+    atlasURL: 'assets/images/flash_spritesheet.json',
   },
 ];
