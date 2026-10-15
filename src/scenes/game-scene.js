@@ -31,6 +31,8 @@ export class GameScene extends Phaser.Scene {
   create() {
     this.objects = [];
 
+    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
+
     this.ruleListObject = new RuleList(this, this.scale.width / 2 + 48, 32).setDepth(1);
     this.ruleListObject.addRule();
     this.add.existing(this.ruleListObject);
@@ -39,12 +41,6 @@ export class GameScene extends Phaser.Scene {
     this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5).setDepth(1);
     this.createNewItem();
     this.objects.push(this.ruleListObject);
-
-    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
-    
-    this.currentItemObject = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter).setDepth(0);
-    this.add.existing(this.currentItemObject);
-    this.objects.push(this.currentItemObject);
 
     this.acceptButtonObject = new AcceptButton(this, 468, 624).setDepth(0);
     this.add.existing(this.acceptButtonObject);
@@ -130,6 +126,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   createNewItem() {
+    console.log("test");
     if (typeof this.currentItemObject != "undefined") {
       this.currentItemObject.destroy();
       const index = this.objects.indexOf(this.currentItemObject);
