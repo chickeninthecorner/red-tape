@@ -31,7 +31,7 @@ export class GameScene extends Phaser.Scene {
   create() {
     this.objects = [];
 
-    this.ruleListObject = new RuleList(this, this.scale.width / 2 + 32, 32).setDepth(1);
+    this.ruleListObject = new RuleList(this, this.scale.width / 2 + 48, 32).setDepth(1);
     this.ruleListObject.addRule();
     this.add.existing(this.ruleListObject);
 

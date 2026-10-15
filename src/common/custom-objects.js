@@ -239,7 +239,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 				fontFamily: "Tengoku", 
 				fontSize:24, color: "#0E0F23", 
 				wordWrap: {
-				width: this.scene.scale.width / 2 - 50,
+				width: this.scene.scale.width / 2 - 80,
 				},
 			},
 		);
