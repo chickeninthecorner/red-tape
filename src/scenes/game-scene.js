@@ -8,6 +8,7 @@ export class GameScene extends Phaser.Scene {
   TIME_PENALTY = 7.5 * 1000;
   TIME_REWARD = 7.5 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
+  MAX_RULES = 5;
 
   constructor() {
     super({
@@ -33,6 +34,7 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.ruleListObject);
 
     this.itemIndex = 0;
+    this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5).setDepth(1);
     this.createNewItem();
     this.objects.push(this.ruleListObject);
 
@@ -62,8 +64,6 @@ export class GameScene extends Phaser.Scene {
     this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 0);
 
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
-
-    this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
   }
 
   update(time, delta) {
@@ -75,13 +75,21 @@ export class GameScene extends Phaser.Scene {
     const remainingTime = this.timer.getRemaining();
     this.timerTextObject.text = (remainingTime / 1000).toFixed(1);
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);
+
+    this.itemIndexTextObject.scale = this.itemIndexTextObject.scale - (this.itemIndexTextObject.scale - 1) * 0.1;
   }
 
   evaluate(answer) {
+    this.itemIndexTextObject.setScale(2);
+
     if (answer == this.correctAction) {
       this.corrects += 1;
 
       if (this.corrects % 10 == 0) {
+        if (this.ruleListObject.length == this.MAX_RULES) {
+          this.ruleListObject.spliceRule(1);
+        }
+
         this.ruleListObject.addRule();
 
         const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(1);;
@@ -121,10 +129,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.itemIndex += 1;
-    if (typeof this.itemIndexTextObject != "undefined") {
-      this.itemIndexTextObject.destroy();
-    }
-    this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
+    this.itemIndexTextObject.text = `Item #${this.itemIndex}`;
 
     const properties = this.ruleListObject.generateItemProperties();
     this.color = properties[0];

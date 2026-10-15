@@ -288,6 +288,14 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.updateText();
 	}
 
+	spliceRule(index) {
+		this.rules.splice(index, 1);
+		this.ruleNums.splice(index, 1);
+		this.ruleCount -= 1;
+
+		this.updateText();
+	}
+
 	updateText() {
 		this.textObject.text = this.text;
 	}
