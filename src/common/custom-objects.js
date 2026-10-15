@@ -247,7 +247,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.add(this.textObject)
 
 		this.textObject.setInteractive().on("wheel", (pointer, dx, dy) => {
-			this.targetPosY += Math.round(dy);
+			this.targetPosY += Math.round(-dy);
 		});
 	}
 	
