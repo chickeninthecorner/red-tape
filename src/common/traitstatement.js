@@ -80,8 +80,10 @@ export class TraitStatement {
 		{
 			case "color":
 				answer = color;
+				break;
 			case "number":
 				answer = number;
+				break;
 			case "letter":
 				answer = letter;
 		}
