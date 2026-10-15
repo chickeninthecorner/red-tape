@@ -4,9 +4,10 @@ import { ASSET_KEYS } from '../common/assets.js';
 import { RuleList } from '../common/rulelist.js';
 
 export class GameScene extends Phaser.Scene {
+  INITIAL_TIME = 50 * 1000;
   MAX_TIME = 100 * 1000
   TIME_PENALTY = 10 * 1000;
-  TIME_REWARD = 15 * 1000;
+  TIME_REWARD = 10 * 1000;
 
   constructor() {
     super({
@@ -47,7 +48,7 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.rejectButtonObject);
     this.objects.push(this.rejectButtonObject);
 
-    this.add.text(
+    this.rulesTextObject = this.add.text(
       this.scale.width / 2 + 32, 
       32, 
       this.ruleList.text, 
@@ -61,7 +62,7 @@ export class GameScene extends Phaser.Scene {
     ).setDepth(0);;
 
     this.timer = this.time.addEvent({
-        delay: this.MAX_TIME,
+        delay: this.INITIAL_TIME,
         // callback: this.onTimerComplete,
         // callbackScope: this
     });
@@ -90,6 +91,15 @@ export class GameScene extends Phaser.Scene {
     if (answer == this.correctAction) {
       this.score += 10;
       this.scoreTextObject.text = this.score;
+
+      if (this.score % 100 == 0) {
+        this.ruleList.addRule();
+        this.rulesTextObject.text = this.ruleList?.text;
+
+        const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(1);;
+        this.add.existing(flash);
+        this.objects.push(flash);
+      }
 
       this.timer.reset({
           delay: Math.min(this.timer.getRemaining() + this.TIME_REWARD, this.MAX_TIME),

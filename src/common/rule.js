@@ -47,6 +47,10 @@ class Rule {
 
 
 export class Default extends Rule {
+	constructor(action = null) {
+		super(0, "accept");
+	}
+
 	get text() {
 		return "ACCEPT all objects, but prioritize the newest rules that apply to the object"
 	}

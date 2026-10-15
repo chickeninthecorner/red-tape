@@ -33,8 +33,14 @@ export class RuleList {
 
 	addRule() {
 		const rule = weightedRandom(this.ITEMS, this.WEIGHTS);
-		if (this.getActionCount("reject") == 0) {
+		const numAccept = this.getActionCount("accept");
+		const numReject = this.getActionCount("reject");
+		console.log(numAccept, numReject);
+		if (numReject == 0 || numAccept > numReject + 1) {
 			this.rules.push(new rule("reject"));
+		}
+		else if (numReject > numAccept + 1) {
+			this.rules.push(new rule("accept"));
 		}
 		else {
 			this.rules.push(new rule());
@@ -71,6 +77,7 @@ export class RuleList {
 		this.rules.forEach(rule => {
 			if (rule.action == action) {
 				result += 1;
+				console.log(rule.text, rule.action);
 			}
 		});
 
