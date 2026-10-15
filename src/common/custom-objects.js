@@ -256,6 +256,8 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.ruleCount += 1;
 		this.ruleIndex += 1;
 		this.ruleNums.push(this.ruleIndex);
+
+		this.updateText();
 	}
 
 	updateText() {
