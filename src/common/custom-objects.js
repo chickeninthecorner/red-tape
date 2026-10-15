@@ -133,7 +133,7 @@ export class RejectButton extends Phaser.GameObjects.Container {
 
 
 export class Flash extends Phaser.GameObjects.Container {
-	MAX_TIME = 2 * 1000;
+	MAX_TIME = 1 * 1000;
 
 	constructor(scene, x, y, type) {
 		super(scene, x, y);
@@ -149,6 +149,10 @@ export class Flash extends Phaser.GameObjects.Container {
 			case "newRule":
 				frame = "newRule";
 				text = "NEW RULE";
+				break;
+			case "modifiedRules":
+				frame = "newRule";
+				text = "MODIFIED\nRULES";
 		}
 
 		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.FLASHES, frame);
@@ -173,7 +177,7 @@ export class Flash extends Phaser.GameObjects.Container {
 	}
 
 	update(time, delta) {
-		this.alpha = this.timer.getRemaining() / this.MAX_TIME;
+		this.alpha = Math.sqrt(this.timer.getRemaining() / this.MAX_TIME);
 	}
 
 	onTimerComplete() {

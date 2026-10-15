@@ -8,7 +8,7 @@ export class GameScene extends Phaser.Scene {
   TIME_PENALTY = 7.5 * 1000;
   TIME_REWARD = 7.5 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
-  MAX_RULES = 5;
+  MAX_RULES = 7;
   SCORE_TEXT_OBJECT_MAX_SCALE = 1.5;
   SCORE_TEXT_OBJECT_SCALE_LERP = 0.2;
 
@@ -89,13 +89,18 @@ export class GameScene extends Phaser.Scene {
       if (this.corrects % 10 == 0) {
         if (this.ruleListObject.length == this.MAX_RULES) {
           this.ruleListObject.spliceRule(1);
+          const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "modifiedRules").setDepth(1);
+          this.add.existing(flash);
+          this.objects.push(flash);
+        }
+        else{
+          const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(1);
+          this.add.existing(flash);
+          this.objects.push(flash);
         }
 
         this.ruleListObject.addRule();
 
-        const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(1);;
-        this.add.existing(flash);
-        this.objects.push(flash);
       }
 
       const remainingTime = this.timer.getRemaining();
