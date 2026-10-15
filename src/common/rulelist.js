@@ -21,8 +21,8 @@ export class RuleList {
 	ruleNums = [];
 	ruleCount;
 	ruleIndex;
-	ITEMS = [Is, IsAndNot, IsNorIs, IsXorIs];
-	WEIGHTS = [8, 4, 2, 1];
+	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs];
+	RULE_TYPES_WEIGHTS = [8, 4, 2, 1];
 
 	constructor() {
 		this.rules.push(new Default());
@@ -31,21 +31,25 @@ export class RuleList {
 		this.ruleNums.push(this.ruleIndex);
 	}
 
-	addRule() {
-		const rule = weightedRandom(this.ITEMS, this.WEIGHTS);
+	getRule() {
+		const ruleType = weightedRandom(this.RULE_TYPES, this.RULE_TYPES_WEIGHTS);
 		const numAccept = this.getActionCount("accept");
 		const numReject = this.getActionCount("reject");
-		console.log(numAccept, numReject);
 		if (numReject == 0 || numAccept > numReject + 1) {
-			this.rules.push(new rule("reject"));
+			return new ruleType("reject");
 		}
 		else if (numReject > numAccept + 1) {
-			this.rules.push(new rule("accept"));
+			return new ruleType("accept");
 		}
 		else {
-			this.rules.push(new rule());
+			return new ruleType();
 		}
+	}
 
+	addRule() {
+		const rule = this.getRule();
+
+		this.rules.push(rule);
 		this.ruleCount += 1;
 		this.ruleIndex += 1;
 		this.ruleNums.push(this.ruleIndex);
@@ -55,6 +59,10 @@ export class RuleList {
 		this.rules.forEach(rule => {
 			console.log(rule.text);
 		});
+	}
+
+	get length() {
+		return this.rules.length;
 	}
 
 	get text() {
