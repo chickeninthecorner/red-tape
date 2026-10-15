@@ -47,7 +47,7 @@ export class AcceptButton extends Phaser.GameObjects.Container {
 
 		this.hovered = false;
 
-		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.ACCEPT_BUTTON, scene.color).setScale(1 , 1).setInteractive();
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.ACCEPT_BUTTON).setScale(1 , 1).setInteractive();
 		this.spriteObject.on('pointerover', () => this.hovered = true);
 		this.spriteObject.on('pointerout', () => this.hovered = false);
 		this.spriteObject.on('pointerdown', () => this.press());
@@ -92,7 +92,7 @@ export class RejectButton extends Phaser.GameObjects.Container {
 
 		this.hovered = false;
 
-		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.REJECT_BUTTON, scene.color).setScale(1 , 1).setInteractive();
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.REJECT_BUTTON).setScale(1 , 1).setInteractive();
 		this.spriteObject.on('pointerover', () => this.hovered = true);
 		this.spriteObject.on('pointerout', () => this.hovered = false);
 		this.spriteObject.on('pointerdown', () => this.press());
@@ -123,5 +123,46 @@ export class RejectButton extends Phaser.GameObjects.Container {
 	press() {
 		this.setScale(this.MIN_SCALE);
 		this.scene.evaluate("reject");
+	}
+}
+
+
+export class RedFlash extends Phaser.GameObjects.Container {
+	MAX_TIME = 2 * 1000;
+
+	constructor(scene, x, y) {
+		super(scene, x, y);
+		this.scene = scene;
+
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.RED_FLASH);
+
+		this.textObject = scene.add.text(
+			0, 
+			0, 
+			"INCORRECT", 
+			{
+				fontFamily: "Tengoku", 
+				fontSize: 96, 
+				color: "#FFFFFF",
+			}
+		).setOrigin(0.5);
+
+		this.add([this.spriteObject, this.textObject]);
+
+		this.timer = this.scene.time.addEvent({
+			delay: this.MAX_TIME,
+			callback: this.onTimerComplete,
+			callbackScope: this
+		});
+	}
+
+	update(time, delta) {
+		this.alpha = this.timer.getRemaining() / this.MAX_TIME
+	}
+
+	onTimerComplete() {
+		const index = this.scene.objects.indexOf(this);
+		this.scene.objects.splice(index, 1);
+		this.destroy();
 	}
 }
