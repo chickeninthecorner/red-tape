@@ -248,12 +248,15 @@ export class RuleList extends Phaser.GameObjects.Container {
 	}
 	
 	update(time, delta) {
-		if (this.targetPosY < this.initialY) {
-			this.targetPosY = (this.initialY - this.targetPosY) * this.LERP + this.targetPosY;
+		const minY = this.initialY - Math.max(0, 64 + this.textObject.displayHeight - this.scene.scale.height);
+		const maxY = this.initialY
+
+		if (this.targetPosY < minY) {
+			this.targetPosY = (minY - this.targetPosY) * this.LERP + this.targetPosY;
 		}
 
-		if (this.targetPosY > this.initialY + this.displayHeight) {
-			this.targetPosY = (this.initialY + this.displayHeight - this.targetPosY) * this.LERP + this.targetPosY;
+		if (this.targetPosY > maxY) {
+			this.targetPosY = (maxY - this.targetPosY) * this.LERP + this.targetPosY;
 		}
 
 		this.y = (this.targetPosY - this.y) * this.LERP + this.y;
