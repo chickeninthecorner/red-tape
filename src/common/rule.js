@@ -12,6 +12,13 @@ class Rule {
 			this.action = action;
 		}
 
+		if (this.action == "accept") {
+			this.actionText = "[color=green]ACCEPT[/color]";
+		}
+		else if (this.action == "reject") {
+			this.actionText = "[color=red]REJECT[/color]";
+		}
+
 		for (let i = traitStatementCount; i > 0; i--) {
 			this.addTraitStatement()
 		}
@@ -52,7 +59,7 @@ export class Default extends Rule {
 	}
 
 	get text() {
-		return "ACCEPT all objects, but prioritize the newest rules that apply to the object"
+		return `${this.actionText} all objects, but prioritize the newest rules that apply to the object`;
 	}
 
 	check(color, number, letter) {
@@ -76,7 +83,7 @@ export class Is extends Rule {
 	}
 
 	get text() {
-		return `${this.action.toUpperCase()} if ${this.traitStatements[0].text}`;
+		return `${this.actionText} if ${this.traitStatements[0].text}`;
 	}
 }
 
@@ -96,7 +103,7 @@ export class IsAndNot extends Rule {
 	}
 
 	get text() {
-		return `${this.action.toUpperCase()} if ${this.traitStatements[0].text}, unless ${this.traitStatements[1].text}`;
+		return `${this.actionText} if ${this.traitStatements[0].text}, unless ${this.traitStatements[1].text}`;
 	}
 }
 
@@ -116,7 +123,7 @@ export class IsNorIs extends Rule {
 	}
 
 	get text() {
-		return `${this.action.toUpperCase()} if neither ${this.traitStatements[0].text} or ${this.traitStatements[1].text}`;
+		return `${this.actionText} if neither ${this.traitStatements[0].text} or ${this.traitStatements[1].text}`;
 	}
 }
 
@@ -135,6 +142,6 @@ export class IsXorIs extends Rule {
 	}
 
 	get text() {
-		return `${this.action.toUpperCase()} if ${this.traitStatements[0].text} or ${this.traitStatements[1].text}, unless both are true`
+		return `${this.actionText} if ${this.traitStatements[0].text} or ${this.traitStatements[1].text}, unless both are true`
 	}
 }

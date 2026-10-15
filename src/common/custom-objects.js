@@ -227,7 +227,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.ruleIndex = 1;
 		this.ruleNums.push(this.ruleIndex);
 
-		this.textObject = this.scene.add.text(
+		this.textObject = this.scene.add.rexBBCodeText(
 			0, 
 			0, 
 			this.text, 
@@ -244,7 +244,6 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 		this.textObject.setInteractive().on("wheel", (pointer, dx, dy) => {
 			this.targetPosY += Math.round(dy);
-			console.log("help")
 		});
 	}
 	
