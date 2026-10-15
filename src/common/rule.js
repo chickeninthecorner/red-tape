@@ -4,8 +4,13 @@ import { TraitStatement } from '../common/traitstatement.js';
 class Rule {
 	traitStatements = [];
 
-	constructor(traitStatementCount) {
-		this.action = Phaser.Utils.Array.GetRandom(["accept", "reject"]);
+	constructor(traitStatementCount, action) {
+		if (action == null) {
+			this.action = Phaser.Utils.Array.GetRandom(["accept", "reject"]);
+		}
+		else {
+			this.action = action;
+		}
 
 		for (let i = traitStatementCount; i > 0; i--) {
 			this.addTraitStatement()
@@ -53,8 +58,8 @@ export class Default extends Rule {
 
 
 export class Is extends Rule {
-	constructor() {
-		super(1);
+	constructor(action = null) {
+		super(1, action);
 	}
 
 	check(color, number, letter) {
@@ -73,8 +78,8 @@ export class Is extends Rule {
 
 
 export class IsAndNot extends Rule {
-	constructor() {
-		super(2);
+	constructor(action = null) {
+		super(2, action);
 	}
 
 	check(color, number, letter) {
@@ -93,8 +98,8 @@ export class IsAndNot extends Rule {
 
 
 export class IsNorIs extends Rule {
-	constructor() {
-		super(2);
+	constructor(action = null) {
+		super(2, action);
 	}
 
 	check(color, number, letter) {
@@ -112,8 +117,8 @@ export class IsNorIs extends Rule {
 }
 
 export class IsXorIs extends Rule {
-	constructor() {
-		super(2);
+	constructor(action = null) {
+		super(2, action);
 	}
 
 	check(color, number, letter) {

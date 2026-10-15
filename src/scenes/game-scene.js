@@ -70,7 +70,6 @@ export class GameScene extends Phaser.Scene {
     this.score = 0;
     this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 0);
 
-
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
 
     this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
