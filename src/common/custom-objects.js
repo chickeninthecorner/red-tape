@@ -1,4 +1,4 @@
-import { ASSET_KEYS } from '../common/assets.js';
+import { ASSET_KEYS } from './assets.js';
 
 export class Item extends Phaser.GameObjects.Container {
 	constructor(scene, x, y, color, number, letter) {

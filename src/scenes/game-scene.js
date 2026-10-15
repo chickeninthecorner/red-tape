@@ -1,4 +1,4 @@
-import { Item } from '../common/item.js';
+import { Item } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 import { RuleList } from '../common/rulelist.js';
