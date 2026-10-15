@@ -1,13 +1,12 @@
-import { Item, AcceptButton, RejectButton, Flash } from '../common/custom-objects.js';
+import { Item, AcceptButton, RejectButton, Flash, RuleList } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
-import { RuleList } from '../common/rulelist.js';
 
 export class GameScene extends Phaser.Scene {
   INITIAL_TIME = 50 * 1000;
   MAX_TIME = 100 * 1000
-  TIME_PENALTY = 10 * 1000;
-  TIME_REWARD = 10 * 1000;
+  TIME_PENALTY = 7.5 * 1000;
+  TIME_REWARD = 7.5 * 1000;
 
   constructor() {
     super({
@@ -28,8 +27,9 @@ export class GameScene extends Phaser.Scene {
   create() {
     this.objects = [];
 
-    this.ruleList = new RuleList();
-    this.ruleList.addRule();
+    this.ruleListObject = new RuleList(this, 0, 0);
+    this.ruleListObject.addRule();
+    this.add.existing(this.ruleListObject);
 
     this.itemIndex = 0;
     this.createNewItem();
@@ -51,7 +51,7 @@ export class GameScene extends Phaser.Scene {
     this.rulesTextObject = this.add.text(
       this.scale.width / 2 + 32, 
       32, 
-      this.ruleList.text, 
+      this.ruleListObject.text, 
       {
         fontFamily: "Tengoku", 
         fontSize:24, color: "#0E0F23", 
@@ -59,8 +59,8 @@ export class GameScene extends Phaser.Scene {
           width: this.scale.width / 2 - 50,
         },
       },
-    ).setDepth(0);;
-
+    ).setDepth(0);
+    
     this.timer = this.time.addEvent({
         delay: this.INITIAL_TIME,
         // callback: this.onTimerComplete,
@@ -93,8 +93,8 @@ export class GameScene extends Phaser.Scene {
       this.scoreTextObject.text = this.score;
 
       if (this.score % 100 == 0) {
-        this.ruleList.addRule();
-        this.rulesTextObject.text = this.ruleList?.text;
+        this.ruleListObject.addRule();
+        this.rulesTextObject.text = this.ruleListObject.text;
 
         const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(1);;
         this.add.existing(flash);
@@ -138,7 +138,7 @@ export class GameScene extends Phaser.Scene {
     this.number = Phaser.Math.Between(0, 9);
     this.letter = Phaser.Utils.Array.GetRandom(["a", "b", "c", "d", "e", "f", "g", "h", "i"]);
 
-    this.correctAction = this.ruleList.getCorrectAction(this.color, this.number, this.letter);
+    this.correctAction = this.ruleListObject.getCorrectAction(this.color, this.number, this.letter);
 
     this.currentItemObject = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter)
     this.add.existing(this.currentItemObject);

@@ -1,5 +1,5 @@
 import { ASSET_KEYS } from './assets.js';
-
+import { Default, Is, IsAndNot, IsNorIs, IsXorIs } from '../common/rule.js';
 
 export class Item extends Phaser.GameObjects.Container {
 	LERP = 0.1;
@@ -85,6 +85,7 @@ export class AcceptButton extends Phaser.GameObjects.Container {
 	}
 }
 
+
 export class RejectButton extends Phaser.GameObjects.Container {
 	MAX_SCALE = 1.05;
 	MIN_SCALE = 0.8;
@@ -132,7 +133,7 @@ export class RejectButton extends Phaser.GameObjects.Container {
 
 
 export class Flash extends Phaser.GameObjects.Container {
-	MAX_TIME = 1 * 1000;
+	MAX_TIME = 2 * 1000;
 
 	constructor(scene, x, y, type) {
 		super(scene, x, y);
@@ -179,5 +180,127 @@ export class Flash extends Phaser.GameObjects.Container {
 		const index = this.scene.objects.indexOf(this);
 		this.scene.objects.splice(index, 1);
 		this.destroy();
+	}
+}
+
+
+function weightedRandom(items, weightsInput) {
+    var i;
+	let weights = [...weightsInput];
+
+    for (i = 1; i < weights.length; i++)
+        weights[i] += weights[i - 1];
+    
+    var random = Math.random() * weights[weights.length - 1];
+    
+    for (i = 0; i < weights.length; i++)
+        if (weights[i] > random)
+            break;
+    
+    return items[i];
+}
+
+
+export class RuleList extends Phaser.GameObjects.Container {
+	rules = [];
+	ruleNums = [];
+	ruleCount;
+	ruleIndex;
+	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs];
+	RULE_TYPES_WEIGHTS = [8, 4, 2, 1];
+
+	constructor(scene, x, y) {
+		super(scene, x, y);
+		this.scene = scene;
+
+		this.rules.push(new Default());
+		this.ruleCount = 1;
+		this.ruleIndex = 1;
+		this.ruleNums.push(this.ruleIndex);
+
+		this.textObject = this.scene.add.text(
+			0, 
+			0, 
+			this.text, 
+			{
+				fontFamily: "Tengoku", 
+				fontSize:24, color: "#0E0F23", 
+				wordWrap: {
+				width: this.scene.scale.width / 2 - 50,
+				},
+			},
+		).setDepth(0);
+
+		this.add(this.textObject)
+	}
+
+	getRule() {
+		const ruleType = weightedRandom(this.RULE_TYPES, this.RULE_TYPES_WEIGHTS);
+		const numAccept = this.getActionCount("accept");
+		const numReject = this.getActionCount("reject");
+		if (numReject == 0 || numAccept > numReject + 1) {
+			return new ruleType("reject");
+		}
+		else if (numReject > numAccept + 1) {
+			return new ruleType("accept");
+		}
+		else {
+			return new ruleType();
+		}
+	}
+
+	addRule() {
+		const rule = this.getRule();
+
+		this.rules.push(rule);
+		this.ruleCount += 1;
+		this.ruleIndex += 1;
+		this.ruleNums.push(this.ruleIndex);
+	}
+
+	printRules() {
+		this.rules.forEach(rule => {
+			console.log(rule.text);
+		});
+	}
+
+	get text() {
+		let result = "";
+
+		for (let i = 0; i < this.ruleCount; i++) {
+			if (result !== "") {
+				result += "\n\n";
+			}
+
+			result += `RULE #${this.ruleNums[i]}\n---\n${this.rules[i].text}.`;
+		}
+
+		return result;
+	}
+
+	getActionCount(action) {
+		let result = 0;
+
+		this.rules.forEach(rule => {
+			if (rule.action == action) {
+				result += 1;
+				console.log(rule.text, rule.action);
+			}
+		});
+
+		return result;
+	}
+
+	getCorrectAction(color, number, letter) {
+		let result;
+
+		this.rules.forEach(rule => {
+			const action = rule.check(color, number, letter);
+			if (action != "neutral") {
+				result = action;
+			}
+		});
+
+		return result;
 	}
 }
