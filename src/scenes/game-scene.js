@@ -118,11 +118,10 @@ export class GameScene extends Phaser.Scene {
     }
     this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
 
-    const prefix = Phaser.Utils.Array.GetRandom(["dark", "light"]);
-    const suffix = Phaser.Utils.Array.GetRandom(["Red", "Green", "Blue"]);
-    this.color = prefix + suffix;
-    this.number = Phaser.Math.Between(0, 9);
-    this.letter = Phaser.Utils.Array.GetRandom(["a", "b", "c", "d", "e", "f", "g", "h", "i"]);
+    const properties = this.ruleListObject.generateItemProperties();
+    this.color = properties[0];
+    this.number = properties[1];
+    this.letter = properties[2];
 
     this.correctAction = this.ruleListObject.getCorrectAction(this.color, this.number, this.letter);
 

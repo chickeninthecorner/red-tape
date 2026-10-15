@@ -204,10 +204,16 @@ function weightedRandom(items, weightsInput) {
 export class RuleList extends Phaser.GameObjects.Container {
 	rules = [];
 	ruleNums = [];
+	propertiesList = [];
 	ruleCount;
 	ruleIndex;
 	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs];
 	RULE_TYPES_WEIGHTS = [8, 4, 2, 1];
+	PROPERTIES_BATCH_SIZE = 10;
+	MAX_REGENERATE_ATTEMPT = 10;
+	TARGET_ACCEPT_COUNT = 6;
+	TARGET_REJECT_COUNT = 3;
+
 
 	constructor(scene, x, y) {
 		super(scene, x, y);
@@ -302,5 +308,45 @@ export class RuleList extends Phaser.GameObjects.Container {
 		});
 
 		return result;
+	}
+
+	generateItemProperties() {
+		if (this.propertiesList.length == 0) {
+			let attempts = this.MAX_REGENERATE_ATTEMPT
+			let accepts = 0;
+			let rejects = 0;
+			while (this.propertiesList.length < this.PROPERTIES_BATCH_SIZE) {
+				const prefix = Phaser.Utils.Array.GetRandom(["dark", "light"]);
+				const suffix = Phaser.Utils.Array.GetRandom(["Red", "Green", "Blue"]);
+				const color = prefix + suffix;
+				const number = Phaser.Math.Between(0, 9);
+				const letter = Phaser.Utils.Array.GetRandom(["a", "b", "c", "d", "e", "f", "g", "h", "i"]);
+
+				const correctAction = this.getCorrectAction(color, number, letter);
+
+				if (attempts > 0) {
+					if (correctAction == "accept") {
+						if (accepts == this.TARGET_ACCEPT_COUNT && rejects < this.TARGET_REJECT_COUNT) {
+							continue;
+						}
+						accepts += 1;
+					}
+
+					if (correctAction == "reject") {
+						if (rejects == this.TARGET_REJECT_COUNT && accepts < this.TARGET_ACCEPT_COUNT) {
+		
+							continue;
+						}
+						rejects += 1;
+					}
+				}
+
+
+				this.propertiesList.push([color, number, letter]);
+			}
+			console.log(accepts);
+		}
+		
+		return this.propertiesList.pop();
 	}
 }
