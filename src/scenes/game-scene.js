@@ -1,4 +1,5 @@
 import Phaser from '../lib/phaser.js';
+import { Item } from '../common/item.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 import { RuleList } from '../common/rulelist.js';
@@ -27,6 +28,8 @@ export class GameScene extends Phaser.Scene {
     ruleList.addRule();
     ruleList.addRule();
     ruleList.printRules();
+
+    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
     
     this.itemIndex = 1;
     const prefix = Phaser.Utils.Array.GetRandom(["dark", "light"]);
@@ -34,29 +37,39 @@ export class GameScene extends Phaser.Scene {
     this.color = prefix + suffix;
     this.number = Phaser.Math.Between(0, 9);
     this.letter = Phaser.Utils.Array.GetRandom(["a", "b", "c", "d", "e", "f", "g", "h", "i"]);
-    console.log(this.color, this.number, this.letter);
 
-    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
-    this.add.image(this.scale.width / 4, this.scale.height / 2, ASSET_KEYS.SQUARES, this.color);
+    // let textColor;
+    // if (this.color.startsWith("dark")) {
+    //   textColor = "#FFFFFF"
+    // }
+    // else {
+    //   textColor = "#0E0F23"
+    // }
 
-    let textColor;
-    if (this.color.startsWith("dark")) {
-      textColor = "#FFFFFF"
-    }
-    else {
-      textColor = "#0E0F23"
-    }
+    // this.add.image(this.scale.width / 4, this.scale.height / 2, ASSET_KEYS.SQUARES, this.color);
+    // this.add.text(
+    //   this.scale.width / 4, 
+    //   this.scale.height / 2, 
+    //   `${this.number}${this.letter.toUpperCase()}`, 
+    //   {
+    //     fontFamily: "Tengoku", 
+    //     fontSize: 96, 
+    //     color: textColor,
+    //   }
+    // ).setOrigin(0.5);
 
-    this.add.text(this.scale.width / 4, this.scale.height / 2, `${this.number}${this.letter.toUpperCase()}`, {fontFamily: "Tengoku", fontSize:96, color: textColor}).setOrigin(0.5);
+    this.add.existing(new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter));
 
     this.add.text(
-      this.scale.width / 2 + 25, 25, ruleList.text, 
+      this.scale.width / 2 + 32, 
+      32, 
+      ruleList.text, 
       {
         fontFamily: "Tengoku", 
         fontSize:24, color: "#0E0F23", 
         wordWrap: {
           width: this.scale.width / 2 - 50,
-        }
+        },
       }
     );
 
@@ -80,6 +93,5 @@ export class GameScene extends Phaser.Scene {
     const remainingTime = this.timer.getRemaining();
     this.timerTextObject.text = (remainingTime / 1000).toFixed(1);
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);
-    
   }
 }
