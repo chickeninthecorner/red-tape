@@ -1,4 +1,4 @@
-import { Item } from '../common/custom-objects.js';
+import { Item, AcceptButton, RejectButton } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 import { RuleList } from '../common/rulelist.js';
@@ -24,6 +24,7 @@ export class GameScene extends Phaser.Scene {
     this.MAX_TIME = 100 * 1000;
 
     const ruleList = new RuleList();
+    ruleList.addRule();
     ruleList.addRule();
     ruleList.addRule();
     ruleList.printRules();
@@ -63,13 +64,21 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.currenItem);
     this.objects.push(this.currenItem);
 
+    this.acceptButtonObject = new AcceptButton(this, 468, 624)
+    this.add.existing(this.acceptButtonObject);
+    this.objects.push(this.acceptButtonObject);
+
+    this.rejectButtonObject = new RejectButton(this, 172, 624)
+    this.add.existing(this.rejectButtonObject);
+    this.objects.push(this.rejectButtonObject);
+
     this.add.text(
       this.scale.width / 2 + 32, 
       32, 
       ruleList.text, 
       {
         fontFamily: "Tengoku", 
-        fontSize:24, color: "#0E0F23", 
+        fontSize:18, color: "#0E0F23", 
         wordWrap: {
           width: this.scale.width / 2 - 50,
         },
@@ -84,7 +93,7 @@ export class GameScene extends Phaser.Scene {
     this.timerTextObject = this.add.text(this.scale.width / 4, 48, this.timer.getRemainingSeconds(), {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"}).setOrigin(0.5);
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
 
-    this.add.text(this.scale.width / 4, this.scale.height / 4, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
+    this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
 
     // const helloButton = this.add.text(100, 100, 'Hello Phaser!', { fill: '#0f0' });
     // helloButton.setInteractive();
@@ -94,7 +103,9 @@ export class GameScene extends Phaser.Scene {
 
   update(time, delta) {
     this.objects.forEach(object => {
-      object.update(time, delta);
+      if (typeof object.update == 'function') {
+        object.update(time, delta);
+      }
     })
     const remainingTime = this.timer.getRemaining();
     this.timerTextObject.text = (remainingTime / 1000).toFixed(1);

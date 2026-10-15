@@ -8,11 +8,11 @@ class Statement {
 			switch (statementType) {
 				case "darkShade":	
 					this.validAnswers = ["darkRed", "darkGreen", "darkBlue"];
-					this.text = "is dark";
+					this.text = "is a dark color";
 					break;
 				case "lightShade":
 					this.validAnswers = ["lightRed", "lightGreen", "lightBlue"];
-					this.text = "is light";
+					this.text = "is a light color";
 					break;
 				case "colorShade":
 					const prefix = ["light", "dark"];

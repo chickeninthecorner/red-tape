@@ -6,7 +6,7 @@ import { PreloadScene } from './scenes/preload-scene.js';
 /** @type {Phaser.Types.Core.GameConfig} */
 const gameConfig = {
   type: Phaser.AUTO,
-  pixelArt: true,
+  pixelArt: false,
   title: 'Red Tape',
   scale: {
     parent: 'game-container',

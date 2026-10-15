@@ -54,7 +54,7 @@ export class RuleList {
 				result += "\n\n";
 			}
 
-			result += `RULE #${this.ruleNums[i]}\n${this.rules[i].text}`;
+			result += `RULE #${this.ruleNums[i]}\n---\n${this.rules[i].text}.`;
 		}
 
 		return result;
@@ -68,7 +68,6 @@ export class RuleList {
 			if (action != "neutral") {
 				result = action;
 			}
-			console.log(Math.random(), action);
 		});
 
 		return result;

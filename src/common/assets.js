@@ -2,6 +2,8 @@ export const ASSET_KEYS = Object.freeze({
   SQUARES: 'SQUARES',
   BACKGROUND: 'BACKGROUND',
   PROGRESS_BAR: 'PROGRESS_BAR',
+  REJECT_BUTTON: 'REJECT_BUTTON',
+  ACCEPT_BUTTON: 'ACCEPT_BUTTON',
 });
 
 export const IMAGE_ASSETS = [
@@ -12,6 +14,14 @@ export const IMAGE_ASSETS = [
   {
     assetKey: ASSET_KEYS.PROGRESS_BAR,
     path: 'assets/images/progress_bar.png',
+  },
+  {
+    assetKey: ASSET_KEYS.REJECT_BUTTON,
+    path: 'assets/images/reject_button.png',
+  },
+  {
+    assetKey: ASSET_KEYS.ACCEPT_BUTTON,
+    path: 'assets/images/accept_button.png',
   },
 ];
 

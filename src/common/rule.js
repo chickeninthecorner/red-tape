@@ -43,7 +43,7 @@ class Rule {
 
 export class Default extends Rule {
 	get text() {
-		return "ACCEPT all objects"
+		return "ACCEPT all objects, but prioritize the newest rules that apply to the object"
 	}
 
 	check(color, number, letter) {
