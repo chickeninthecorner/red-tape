@@ -1,4 +1,3 @@
-import Phaser from '../lib/phaser.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { IMAGE_ASSETS, TEXTURE_ATLAS_ASSETS } from '../common/assets.js';
 

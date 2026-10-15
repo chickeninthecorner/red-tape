@@ -1,5 +1,4 @@
 import { Default, Is, IsAndNot, IsNorIs, IsXorIs } from '../common/rule.js';
-import Phaser from '../lib/phaser.js';
 
 function weightedRandom(items, weightsInput) {
     var i;

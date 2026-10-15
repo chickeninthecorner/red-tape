@@ -1,5 +1,4 @@
 import { TraitStatement } from '../common/traitstatement.js';
-import Phaser from '../lib/phaser.js';
 
 
 class Rule {

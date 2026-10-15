@@ -3,8 +3,9 @@ import { ASSET_KEYS } from '../common/assets.js';
 export class Item extends Phaser.GameObjects.Container {
 	constructor(scene, x, y, color, number, letter) {
 		super(scene, x, y);
+		this.scene = scene;
 
-		const sprite = scene.add.image(0, 0, ASSET_KEYS.SQUARES, scene.color);
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.SQUARES, scene.color);
 		
 		let textColor;
 		if (color.startsWith("dark")) {
@@ -14,7 +15,7 @@ export class Item extends Phaser.GameObjects.Container {
 			textColor = "#0E0F23";
 			}
 
-		const text = scene.add.text(
+		this.textObject = scene.add.text(
 			0, 
 			0, 
 			`${number}${letter.toUpperCase()}`, 
@@ -25,6 +26,10 @@ export class Item extends Phaser.GameObjects.Container {
 			}
 		).setOrigin(0.5);
 
-		this.add([sprite, text]);
+		this.add([this.spriteObject, this.textObject]);
+	}
+
+	update(time, delta) {
+		this.spriteObject.rotation += 0.0001 * delta;
 	}
 }

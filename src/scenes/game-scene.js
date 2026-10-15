@@ -1,4 +1,3 @@
-import Phaser from '../lib/phaser.js';
 import { Item } from '../common/item.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
@@ -58,7 +57,11 @@ export class GameScene extends Phaser.Scene {
     //   }
     // ).setOrigin(0.5);
 
-    this.add.existing(new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter));
+    this.objects = [];
+    
+    this.currenItem = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter)
+    this.add.existing(this.currenItem);
+    this.objects.push(this.currenItem);
 
     this.add.text(
       this.scale.width / 2 + 32, 
@@ -70,7 +73,7 @@ export class GameScene extends Phaser.Scene {
         wordWrap: {
           width: this.scale.width / 2 - 50,
         },
-      }
+      },
     );
 
     this.timer = this.time.addEvent({
@@ -90,6 +93,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(time, delta) {
+    this.objects.forEach(object => {
+      object.update(time, delta);
+    })
     const remainingTime = this.timer.getRemaining();
     this.timerTextObject.text = (remainingTime / 1000).toFixed(1);
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);

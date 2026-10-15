@@ -16,6 +16,10 @@ const gameConfig = {
     mode: Phaser.Scale.FIT,
   },
   backgroundColor: '#17183B',
+  fps: {
+        target: 60,
+        forceSetTimeOut: true
+  },
 };
 
 const game = new Phaser.Game(gameConfig);
