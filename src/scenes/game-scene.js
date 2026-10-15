@@ -33,6 +33,7 @@ export class GameScene extends Phaser.Scene {
 
     this.itemIndex = 0;
     this.createNewItem();
+    this.objects.push(this.ruleListObject);
 
     this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
     

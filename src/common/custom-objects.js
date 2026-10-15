@@ -173,7 +173,7 @@ export class Flash extends Phaser.GameObjects.Container {
 	}
 
 	update(time, delta) {
-		this.alpha = this.timer.getRemaining() / this.MAX_TIME
+		this.alpha = this.timer.getRemaining() / this.MAX_TIME;
 	}
 
 	onTimerComplete() {
@@ -213,11 +213,14 @@ export class RuleList extends Phaser.GameObjects.Container {
 	MAX_REGENERATE_ATTEMPT = 10;
 	TARGET_ACCEPT_COUNT = 6;
 	TARGET_REJECT_COUNT = 3;
+	LERP = 0.3;
 
 
 	constructor(scene, x, y) {
 		super(scene, x, y);
 		this.scene = scene;
+		this.initialY = y;
+		this.targetPosY = y;
 
 		this.rules.push(new Default());
 		this.ruleCount = 1;
@@ -238,6 +241,23 @@ export class RuleList extends Phaser.GameObjects.Container {
 		);
 
 		this.add(this.textObject)
+
+		this.textObject.setInteractive().on("wheel", (pointer, dx, dy) => {
+			this.targetPosY += Math.round(dy);
+			console.log("help")
+		});
+	}
+	
+	update(time, delta) {
+		if (this.targetPosY < this.initialY) {
+			this.targetPosY = (this.initialY - this.targetPosY) * this.LERP + this.targetPosY;
+		}
+
+		if (this.targetPosY > this.initialY + this.displayHeight) {
+			this.targetPosY = (this.initialY + this.displayHeight - this.targetPosY) * this.LERP + this.targetPosY;
+		}
+
+		this.y = (this.targetPosY - this.y) * this.LERP + this.y;
 	}
 
 	getRule() {
@@ -290,7 +310,6 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.rules.forEach(rule => {
 			if (rule.action == action) {
 				result += 1;
-				console.log(rule.text, rule.action);
 			}
 		});
 
@@ -344,7 +363,6 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 				this.propertiesList.push([color, number, letter]);
 			}
-			console.log(accepts);
 		}
 		
 		return this.propertiesList.pop();
