@@ -345,6 +345,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 				if (attempts > 0) {
 					if (correctAction == "accept") {
 						if (accepts == this.TARGET_ACCEPT_COUNT && rejects < this.TARGET_REJECT_COUNT) {
+							attempts -= 1;
 							continue;
 						}
 						accepts += 1;
@@ -352,7 +353,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 					if (correctAction == "reject") {
 						if (rejects == this.TARGET_REJECT_COUNT && accepts < this.TARGET_ACCEPT_COUNT) {
-		
+							attempts -= 1;
 							continue;
 						}
 						rejects += 1;
