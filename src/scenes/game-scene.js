@@ -7,6 +7,7 @@ export class GameScene extends Phaser.Scene {
   MAX_TIME = 100 * 1000
   TIME_PENALTY = 7.5 * 1000;
   TIME_REWARD = 7.5 * 1000;
+  TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
 
   constructor() {
     super({
@@ -57,6 +58,7 @@ export class GameScene extends Phaser.Scene {
     this.timerTextObject = this.add.text(64, 32, this.timer.getRemainingSeconds(), {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"});
     
     this.score = 0;
+    this.corrects = 0;
     this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 0);
 
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
@@ -77,10 +79,9 @@ export class GameScene extends Phaser.Scene {
 
   evaluate(answer) {
     if (answer == this.correctAction) {
-      this.score += 10;
-      this.scoreTextObject.text = this.score;
+      this.corrects += 1;
 
-      if (this.score % 100 == 0) {
+      if (this.corrects % 10 == 0) {
         this.ruleListObject.addRule();
 
         const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(1);;
@@ -88,8 +89,14 @@ export class GameScene extends Phaser.Scene {
         this.objects.push(flash);
       }
 
+      const remainingTime = this.timer.getRemaining();
+      const bonusScore = Math.max(0, Math.ceil((this.timer.getRemaining() + this.TIME_REWARD - this.MAX_TIME) * this.TIME_TO_SCORE_CONVERSION));
+
+      this.score += 10 + bonusScore;
+      this.scoreTextObject.text = this.score;
+
       this.timer.reset({
-          delay: Math.min(this.timer.getRemaining() + this.TIME_REWARD, this.MAX_TIME),
+          delay: Math.min(remainingTime + this.TIME_REWARD, this.MAX_TIME),
       });
 
       this.createNewItem();
