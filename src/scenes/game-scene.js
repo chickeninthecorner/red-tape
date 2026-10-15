@@ -6,6 +6,7 @@ import { RuleList } from '../common/rulelist.js';
 export class GameScene extends Phaser.Scene {
   MAX_TIME = 100 * 1000
   TIME_PENALTY = 10 * 1000;
+  TIME_REWARD = 15 * 1000;
 
   constructor() {
     super({
@@ -24,46 +25,19 @@ export class GameScene extends Phaser.Scene {
    * @returns {void}
    */
   create() {
-    this.itemIndex = 1;
-    const prefix = Phaser.Utils.Array.GetRandom(["dark", "light"]);
-    const suffix = Phaser.Utils.Array.GetRandom(["Red", "Green", "Blue"]);
-    this.color = prefix + suffix;
-    this.number = Phaser.Math.Between(0, 9);
-    this.letter = Phaser.Utils.Array.GetRandom(["a", "b", "c", "d", "e", "f", "g", "h", "i"]);
+    this.objects = [];
 
     this.ruleList = new RuleList();
     this.ruleList.addRule();
-    this.ruleList.addRule();
-    this.ruleList.addRule();
-    this.correctAction = this.ruleList.getCorrectAction(this.color, this.number, this.letter);
+
+    this.itemIndex = 0;
+    this.createNewItem();
 
     this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
-
-    // let textColor;
-    // if (this.color.startsWith("dark")) {
-    //   textColor = "#FFFFFF"
-    // }
-    // else {
-    //   textColor = "#0E0F23"
-    // }
-
-    // this.add.image(this.scale.width / 4, this.scale.height / 2, ASSET_KEYS.SQUARES, this.color);
-    // this.add.text(
-    //   this.scale.width / 4, 
-    //   this.scale.height / 2, 
-    //   `${this.number}${this.letter.toUpperCase()}`, 
-    //   {
-    //     fontFamily: "Tengoku", 
-    //     fontSize: 96, 
-    //     color: textColor,
-    //   }
-    // ).setOrigin(0.5);
-
-    this.objects = [];
     
-    this.currentItem = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter).setDepth(0);
-    this.add.existing(this.currentItem);
-    this.objects.push(this.currentItem);
+    this.currentItemObject = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter).setDepth(0);
+    this.add.existing(this.currentItemObject);
+    this.objects.push(this.currentItemObject);
 
     this.acceptButtonObject = new AcceptButton(this, 468, 624).setDepth(0);
     this.add.existing(this.acceptButtonObject);
@@ -94,7 +68,7 @@ export class GameScene extends Phaser.Scene {
     this.timerTextObject = this.add.text(this.scale.width / 4, 48, this.timer.getRemainingSeconds(), {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"}).setOrigin(0.5);
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
 
-    this.itemIndexText = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
+    this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
   }
 
   update(time, delta) {
@@ -110,17 +84,17 @@ export class GameScene extends Phaser.Scene {
 
   evaluate(answer) {
     if (answer == this.correctAction) {
-      console.log("correct!");
-    } else {
-      console.log("wrong!");
+      this.timer.reset({
+          delay: Math.min(this.timer.getRemaining() + this.TIME_REWARD, this.MAX_TIME),
+      });
 
+      this.createNewItem();
+    } else {
       const flash = new RedFlash(this, this.scale.width / 4, this.scale.height / 2).setDepth(1);;
       this.add.existing(flash);
       this.objects.push(flash);
       this.timer.reset({
           delay: this.timer.getRemaining() - this.TIME_PENALTY,
-          // callback: this.onTimerComplete,
-          // callbackScope: this
       });
 
       this.createNewItem();
@@ -128,13 +102,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   createNewItem() {
-    this.currentItem.destroy();
-    const index = this.objects.indexOf(this.currentItem);
+    if (typeof this.currentItemObject != "undefined") {
+      this.currentItemObject.destroy();
+    }
+    const index = this.objects.indexOf(this.currentItemObject);
     this.objects.splice(index, 1);
 
     this.itemIndex += 1;
-    this.itemIndexText.destroy();
-    this.itemIndexText = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
+    if (typeof this.itemIndexTextObject != "undefined") {
+      this.itemIndexTextObject.destroy();
+    }
+    this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5);
 
     const prefix = Phaser.Utils.Array.GetRandom(["dark", "light"]);
     const suffix = Phaser.Utils.Array.GetRandom(["Red", "Green", "Blue"]);
@@ -144,8 +122,8 @@ export class GameScene extends Phaser.Scene {
 
     this.correctAction = this.ruleList.getCorrectAction(this.color, this.number, this.letter);
 
-    this.currentItem = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter)
-    this.add.existing(this.currentItem);
-    this.objects.push(this.currentItem);
+    this.currentItemObject = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter)
+    this.add.existing(this.currentItemObject);
+    this.objects.push(this.currentItemObject);
   }
 }
