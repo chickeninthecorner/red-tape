@@ -27,7 +27,7 @@ export class GameScene extends Phaser.Scene {
   create() {
     this.objects = [];
 
-    this.ruleListObject = new RuleList(this, 0, 0);
+    this.ruleListObject = new RuleList(this, this.scale.width / 2 + 32, 32).setDepth(1);
     this.ruleListObject.addRule();
     this.add.existing(this.ruleListObject);
 
@@ -47,19 +47,6 @@ export class GameScene extends Phaser.Scene {
     this.rejectButtonObject = new RejectButton(this, 172, 624).setDepth(0);
     this.add.existing(this.rejectButtonObject);
     this.objects.push(this.rejectButtonObject);
-
-    this.rulesTextObject = this.add.text(
-      this.scale.width / 2 + 32, 
-      32, 
-      this.ruleListObject.text, 
-      {
-        fontFamily: "Tengoku", 
-        fontSize:24, color: "#0E0F23", 
-        wordWrap: {
-          width: this.scale.width / 2 - 50,
-        },
-      },
-    ).setDepth(0);
     
     this.timer = this.time.addEvent({
         delay: this.INITIAL_TIME,
@@ -94,7 +81,6 @@ export class GameScene extends Phaser.Scene {
 
       if (this.score % 100 == 0) {
         this.ruleListObject.addRule();
-        this.rulesTextObject.text = this.ruleListObject.text;
 
         const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(1);;
         this.add.existing(flash);

@@ -229,7 +229,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 				width: this.scene.scale.width / 2 - 50,
 				},
 			},
-		).setDepth(0);
+		);
 
 		this.add(this.textObject)
 	}
@@ -258,10 +258,8 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.ruleNums.push(this.ruleIndex);
 	}
 
-	printRules() {
-		this.rules.forEach(rule => {
-			console.log(rule.text);
-		});
+	updateText() {
+		this.textObject.text = this.text;
 	}
 
 	get text() {
