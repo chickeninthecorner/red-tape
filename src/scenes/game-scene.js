@@ -4,6 +4,8 @@ import { ASSET_KEYS } from '../common/assets.js';
 import { RuleList } from '../common/rulelist.js';
 
 export class GameScene extends Phaser.Scene {
+  MAX_TIME = 100 * 1000
+
   constructor() {
     super({
       key: SCENE_KEYS.GAME_SCENE,
@@ -21,22 +23,20 @@ export class GameScene extends Phaser.Scene {
    * @returns {void}
    */
   create() {
-    this.MAX_TIME = 100 * 1000;
-
-    const ruleList = new RuleList();
-    ruleList.addRule();
-    ruleList.addRule();
-    ruleList.addRule();
-    ruleList.printRules();
-
-    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
-    
     this.itemIndex = 1;
     const prefix = Phaser.Utils.Array.GetRandom(["dark", "light"]);
     const suffix = Phaser.Utils.Array.GetRandom(["Red", "Green", "Blue"]);
     this.color = prefix + suffix;
     this.number = Phaser.Math.Between(0, 9);
     this.letter = Phaser.Utils.Array.GetRandom(["a", "b", "c", "d", "e", "f", "g", "h", "i"]);
+
+    const ruleList = new RuleList();
+    ruleList.addRule();
+    ruleList.addRule();
+    ruleList.addRule();
+    this.correctAction = ruleList.getCorrectAction(this.color, this.number, this.letter);
+
+    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
 
     // let textColor;
     // if (this.color.startsWith("dark")) {
@@ -78,7 +78,7 @@ export class GameScene extends Phaser.Scene {
       ruleList.text, 
       {
         fontFamily: "Tengoku", 
-        fontSize:18, color: "#0E0F23", 
+        fontSize:24, color: "#0E0F23", 
         wordWrap: {
           width: this.scale.width / 2 - 50,
         },
@@ -110,5 +110,13 @@ export class GameScene extends Phaser.Scene {
     const remainingTime = this.timer.getRemaining();
     this.timerTextObject.text = (remainingTime / 1000).toFixed(1);
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);
+  }
+
+  evaluate(answer) {
+    if (answer == this.correctAction) {
+      console.log("correct!");
+    } else {
+      console.log("wrong!");
+    }
   }
 }

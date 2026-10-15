@@ -6,7 +6,7 @@ export class Item extends Phaser.GameObjects.Container {
 		super(scene, x, y);
 		this.scene = scene;
 
-		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.SQUARES, scene.color);
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.SQUARES, scene.color).setScale(0.875);
 		
 		let textColor;
 		if (color.startsWith("dark")) {
@@ -77,6 +77,7 @@ export class AcceptButton extends Phaser.GameObjects.Container {
 
 	press() {
 		this.setScale(this.MIN_SCALE);
+		this.scene.evaluate("accept");
 	}
 }
 
@@ -121,5 +122,6 @@ export class RejectButton extends Phaser.GameObjects.Container {
 
 	press() {
 		this.setScale(this.MIN_SCALE);
+		this.scene.evaluate("reject");
 	}
 }
