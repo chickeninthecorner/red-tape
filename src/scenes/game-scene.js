@@ -108,9 +108,9 @@ export class GameScene extends Phaser.Scene {
   createNewItem() {
     if (typeof this.currentItemObject != "undefined") {
       this.currentItemObject.destroy();
+      const index = this.objects.indexOf(this.currentItemObject);
+      this.objects.splice(index, 1)
     }
-    const index = this.objects.indexOf(this.currentItemObject);
-    this.objects.splice(index, 1);
 
     this.itemIndex += 1;
     if (typeof this.itemIndexTextObject != "undefined") {
