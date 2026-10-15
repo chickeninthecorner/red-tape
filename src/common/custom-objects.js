@@ -314,6 +314,10 @@ export class RuleList extends Phaser.GameObjects.Container {
 		return result;
 	}
 
+	get length() {
+		return this.rules.length;
+	}
+
 	getActionCount(action) {
 		let result = 0;
 

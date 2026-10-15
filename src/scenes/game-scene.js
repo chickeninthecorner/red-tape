@@ -9,6 +9,8 @@ export class GameScene extends Phaser.Scene {
   TIME_REWARD = 7.5 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
   MAX_RULES = 5;
+  SCORE_TEXT_OBJECT_MAX_SCALE = 1.5;
+  SCORE_TEXT_OBJECT_SCALE_LERP = 0.2;
 
   constructor() {
     super({
@@ -61,7 +63,8 @@ export class GameScene extends Phaser.Scene {
     
     this.score = 0;
     this.corrects = 0;
-    this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 0);
+    this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 1);
+    this.scoreTextObject.y += this.scoreTextObject.displayHeight;
 
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
   }
@@ -76,12 +79,10 @@ export class GameScene extends Phaser.Scene {
     this.timerTextObject.text = (remainingTime / 1000).toFixed(1);
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);
 
-    this.itemIndexTextObject.scale = this.itemIndexTextObject.scale - (this.itemIndexTextObject.scale - 1) * 0.1;
+    this.scoreTextObject.scale = this.scoreTextObject.scale - (this.scoreTextObject.scale - 1) * this.SCORE_TEXT_OBJECT_SCALE_LERP;
   }
 
   evaluate(answer) {
-    this.itemIndexTextObject.setScale(2);
-
     if (answer == this.correctAction) {
       this.corrects += 1;
 
@@ -108,6 +109,8 @@ export class GameScene extends Phaser.Scene {
       });
 
       this.createNewItem();
+      
+      this.scoreTextObject.scale = this.SCORE_TEXT_OBJECT_MAX_SCALE;
     } else {
       const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(1);;
       this.add.existing(flash);
