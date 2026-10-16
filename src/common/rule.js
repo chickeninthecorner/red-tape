@@ -145,3 +145,29 @@ export class IsXorIs extends Rule {
 		return `${this.actionText} if ${this.traitStatements[0].text} or ${this.traitStatements[1].text}, unless both are true`
 	}
 }
+
+export class AtLeastTwoOfThree extends Rule {
+	constructor(action = null) {
+		super(3, action);
+	}
+
+	check(color, number, letter) {
+		const traitStatementsResults = this.getTraitStatementResults(color, number, letter);
+
+		let trues = 0;
+		traitStatementsResults.forEach(result => {
+			if (result) {
+				trues += 1;
+			}
+		})
+
+		if (trues >= 2) {
+			return this.action;
+		}
+		return "neutral";
+	}
+
+	get text() {
+		return `${this.actionText} if at least 2 out of 3 of the following are true:\n- ${this.traitStatements[0].text}\n- ${this.traitStatements[1].text}\n- ${this.traitStatements[2].text}`;
+	}
+}

@@ -1,5 +1,5 @@
 import { ASSET_KEYS } from './assets.js';
-import { Default, Is, IsAndNot, IsNorIs, IsXorIs } from '../common/rule.js';
+import { Default, Is, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree } from '../common/rule.js';
 
 export class Item extends Phaser.GameObjects.Container {
 	LERP = 0.1;
@@ -211,14 +211,14 @@ export class RuleList extends Phaser.GameObjects.Container {
 	propertiesList = [];
 	ruleCount;
 	ruleIndex;
-	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs];
-	RULE_TYPES_WEIGHTS = [8, 4, 2, 1];
+	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
+	RULE_TYPES_WEIGHTS = [6, 3, 2, -1, -1];
+	DIFFICULTY_WEIGHT_MODIFIERS = [0, 0.5, 1, 1.5, 1.5];
 	PROPERTIES_BATCH_SIZE = 10;
 	MAX_REGENERATE_ATTEMPT = 10;
 	TARGET_ACCEPT_COUNT = 6;
 	TARGET_REJECT_COUNT = 3;
 	LERP = 0.3;
-
 
 	constructor(scene, x, y) {
 		super(scene, x, y);
@@ -266,8 +266,13 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.y = (this.targetPosY - this.y) * this.LERP + this.y;
 	}
 
-	getRule() {
-		const ruleType = weightedRandom(this.RULE_TYPES, this.RULE_TYPES_WEIGHTS);
+	getRule(difficulty = 0) {
+		const effectiveWeights = this.RULE_TYPES_WEIGHTS.map((weight, index) => {
+			return Math.max(0, weight + Math.floor(this.DIFFICULTY_WEIGHT_MODIFIERS[index] * difficulty));
+		});
+		const ruleType = weightedRandom(this.RULE_TYPES, effectiveWeights);
+		console.log(effectiveWeights);
+
 		const numAccept = this.getActionCount("accept");
 		const numReject = this.getActionCount("reject");
 		if (numReject == 0 || numAccept > numReject + 1) {
@@ -281,8 +286,8 @@ export class RuleList extends Phaser.GameObjects.Container {
 		}
 	}
 
-	addRule() {
-		const rule = this.getRule();
+	addRule(difficulty = 0) {
+		const rule = this.getRule(difficulty);
 
 		this.rules.push(rule);
 		this.ruleCount += 1;

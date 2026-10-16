@@ -8,9 +8,10 @@ export class GameScene extends Phaser.Scene {
   TIME_PENALTY = 7.5 * 1000;
   TIME_REWARD = 7.5 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
-  MAX_RULES = 20;
+  MAX_RULES = 10;
   SCORE_TEXT_OBJECT_MAX_SCALE = 1.5;
   SCORE_TEXT_OBJECT_SCALE_LERP = 0.2;
+  CORRECTS_TO_DIFFICULTY_CONVERSION = 0.05;
 
   constructor() {
     super({
@@ -57,8 +58,8 @@ export class GameScene extends Phaser.Scene {
     });
     this.timerTextObject = this.add.text(64, 32, this.timer.getRemainingSeconds(), {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"});
     
-    this.score = 0;
     this.corrects = 0;
+    this.score = 0;
     this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 1);
     this.scoreTextObject.y += this.scoreTextObject.displayHeight;
 
@@ -96,8 +97,7 @@ export class GameScene extends Phaser.Scene {
           this.objects.push(flash);
         }
 
-        this.ruleListObject.addRule();
-
+        this.ruleListObject.addRule(this.corrects * this.CORRECTS_TO_DIFFICULTY_CONVERSION);
       }
 
       const remainingTime = this.timer.getRemaining();
