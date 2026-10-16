@@ -213,7 +213,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 	ruleIndex;
 	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
 	RULE_TYPES_WEIGHTS = [6, 3, 2, -1, -1];
-	DIFFICULTY_WEIGHT_MODIFIERS = [0, 0.5, 1, 1.5, 1.5];
+	DIFFICULTY_WEIGHT_MODIFIERS = [0, 0.2, 0.4, 1, 1];
 	PROPERTIES_BATCH_SIZE = 10;
 	MAX_REGENERATE_ATTEMPT = 10;
 	TARGET_ACCEPT_COUNT = 6;

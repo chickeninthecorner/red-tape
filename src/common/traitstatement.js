@@ -1,5 +1,14 @@
+function getUniqueLetters(word) {
+	const letters = new Set();
+	for (let i = 0; i < word.length; i++) {
+		letters.add(word[i]);
+	}
+	return [...letters];
+}
+
 class Statement {
 	validAnswers = [];
+	NOUNS = ["time", "mind", "bomb", "hour", "help", "risk", "task", "pain", "clue", "flaw", "game"];
 
 	constructor(trait) {
 		if (trait == "color") {
@@ -25,7 +34,7 @@ class Statement {
 			}
 		}
 		else if (trait == "number") {
-			const statementType = Phaser.Utils.Array.GetRandom(["prime", "odd", "even"]);
+			const statementType = Phaser.Utils.Array.GetRandom(["prime", "odd", "even", "perfectSquare"]);
 
 			switch (statementType) {
 				case "prime":	
@@ -39,10 +48,15 @@ class Statement {
 				case "even":
 					this.validAnswers = [0, 2, 4, 6, 8];
 					this.text = "is even";
+					break;
+				case "perfectSquare":
+					this.validAnswers = [0, 1, 4, 9];
+					this.text = "is a perfect square";
+					break;
 			}
 		}
 		else if (trait == "letter") {
-			const statementType = Phaser.Utils.Array.GetRandom(["vowel", "consonant"]);
+			const statementType = Phaser.Utils.Array.GetRandom(["vowel", "consonant", "fromWord", "evenNumberedPosition"]);
 
 			switch (statementType) {
 				case "consonant":	
@@ -52,6 +66,15 @@ class Statement {
 				case "vowel":
 					this.validAnswers = ["a", "e", "i"];
 					this.text = "is a vowel";
+					break;
+				case "fromWord":
+					const word = Phaser.Utils.Array.GetRandom(this.NOUNS);
+					this.validAnswers = getUniqueLetters(word);
+					this.text = `is in the word ${word.toUpperCase()}`;
+					console.log(this.validAnswers);
+				case "evenNumberedPosition":
+					this.validAnswers = ["b", "d", "f", "h"]
+					this.text = "has an even-numbered position in the alphabet"
 			}
 		}
 	}
