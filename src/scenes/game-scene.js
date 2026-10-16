@@ -5,13 +5,13 @@ import { ASSET_KEYS } from '../common/assets.js';
 export class GameScene extends Phaser.Scene {
   INITIAL_TIME = 50 * 1000;
   MAX_TIME = 100 * 1000
-  TIME_PENALTY = 7.5 * 1000;
+  TIME_PENALTY = 15 * 1000;
   TIME_REWARD = 7.5 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
-  MAX_RULES = 10;
+  MAX_RULES = 8;
   SCORE_TEXT_OBJECT_MAX_SCALE = 1.5;
   SCORE_TEXT_OBJECT_SCALE_LERP = 0.2;
-  CORRECTS_TO_DIFFICULTY_CONVERSION = 0.05;
+  CORRECTS_TO_DIFFICULTY_CONVERSION = 0.1;
 
   constructor() {
     super({
@@ -34,7 +34,7 @@ export class GameScene extends Phaser.Scene {
 
     this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
 
-    this.ruleListObject = new RuleList(this, this.scale.width / 2 + 48, 32).setDepth(1);
+    this.ruleListObject = new RuleList(this, this.scale.width / 2 + 16, 32).setDepth(1);
     this.ruleListObject.addRule();
     this.add.existing(this.ruleListObject);
 
@@ -53,6 +53,7 @@ export class GameScene extends Phaser.Scene {
     
     this.timer = this.time.addEvent({
         delay: this.INITIAL_TIME,
+        paused: true,
         // callback: this.onTimerComplete,
         // callbackScope: this
     });
@@ -99,16 +100,25 @@ export class GameScene extends Phaser.Scene {
 
         this.ruleListObject.addRule(this.corrects * this.CORRECTS_TO_DIFFICULTY_CONVERSION);
       }
+      
+      let bonusScore;
+      if (this.timer.paused)
+      {
+        this.timer.paused = false;
+        bonusScore = 0;
+      }
+      else
+      {
+        const remainingTime = this.timer.getRemaining();
+        bonusScore = Math.max(0, Math.ceil((this.timer.getRemaining() + this.TIME_REWARD - this.MAX_TIME) * this.TIME_TO_SCORE_CONVERSION));
 
-      const remainingTime = this.timer.getRemaining();
-      const bonusScore = Math.max(0, Math.ceil((this.timer.getRemaining() + this.TIME_REWARD - this.MAX_TIME) * this.TIME_TO_SCORE_CONVERSION));
+        this.timer.reset({
+            delay: Math.min(remainingTime + this.TIME_REWARD, this.MAX_TIME),
+        });
+      }
 
       this.score += 10 + bonusScore;
       this.scoreTextObject.text = this.score;
-
-      this.timer.reset({
-          delay: Math.min(remainingTime + this.TIME_REWARD, this.MAX_TIME),
-      });
 
       this.createNewItem();
       
@@ -118,9 +128,12 @@ export class GameScene extends Phaser.Scene {
       this.add.existing(flash);
       this.objects.push(flash);
 
-      this.timer.reset({
+      if (!this.timer.paused)
+      {
+        this.timer.reset({
           delay: this.timer.getRemaining() - this.TIME_PENALTY,
-      });
+        });
+      }
 
       this.createNewItem();
     }
