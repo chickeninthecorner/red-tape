@@ -317,7 +317,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 				result += "\n\n";
 			}
 
-			result += `RULE #${this.ruleNums[i]}\n---\n${this.rules[i].text}.`;
+			result += `RULE #${this.ruleNums[i]}\n---\n${this.rules[i].text}`;
 		}
 
 		return result;
