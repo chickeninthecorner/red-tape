@@ -56,7 +56,7 @@ class Statement {
 			}
 		}
 		else if (trait == "letter") {
-			const statementType = Phaser.Utils.Array.GetRandom(["vowel", "consonant", "fromWord", "evenNumberedPosition"]);
+			const statementType = Phaser.Utils.Array.GetRandom(["vowel", "consonant", "fromWord"]);
 
 			switch (statementType) {
 				case "consonant":	
@@ -71,10 +71,7 @@ class Statement {
 					const word = Phaser.Utils.Array.GetRandom(this.NOUNS);
 					this.validAnswers = getUniqueLetters(word);
 					this.text = `is in the word ${word.toUpperCase()}`;
-					console.log(this.validAnswers);
-				case "evenNumberedPosition":
-					this.validAnswers = ["b", "d", "f", "h"]
-					this.text = "has an even-numbered position in the alphabet"
+					break;
 			}
 		}
 	}
