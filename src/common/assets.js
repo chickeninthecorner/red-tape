@@ -2,6 +2,7 @@ export const ASSET_KEYS = Object.freeze({
   SQUARES: 'SQUARES',
   BACKGROUND: 'BACKGROUND',
   PROGRESS_BAR: 'PROGRESS_BAR',
+  PROGRESS_BAR_BACKGROUND: 'PROGRESS_BAR_BACKGROUND',
   REJECT_BUTTON: 'REJECT_BUTTON',
   ACCEPT_BUTTON: 'ACCEPT_BUTTON',
   FLASHES: 'FLASHES',
@@ -15,6 +16,10 @@ export const IMAGE_ASSETS = [
   {
     assetKey: ASSET_KEYS.PROGRESS_BAR,
     path: 'assets/images/progress_bar.png',
+  },
+  {
+    assetKey: ASSET_KEYS.PROGRESS_BAR_BACKGROUND,
+    path: 'assets/images/progress_bar_background.png',
   },
   {
     assetKey: ASSET_KEYS.REJECT_BUTTON,

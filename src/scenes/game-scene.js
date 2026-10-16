@@ -8,7 +8,7 @@ export class GameScene extends Phaser.Scene {
   TIME_PENALTY = 7.5 * 1000;
   TIME_REWARD = 7.5 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
-  MAX_RULES = 7;
+  MAX_RULES = 20;
   SCORE_TEXT_OBJECT_MAX_SCALE = 1.5;
   SCORE_TEXT_OBJECT_SCALE_LERP = 0.2;
 
@@ -62,6 +62,7 @@ export class GameScene extends Phaser.Scene {
     this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 1);
     this.scoreTextObject.y += this.scoreTextObject.displayHeight;
 
+    this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR_BACKGROUND).setOrigin(0);
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
   }
 
