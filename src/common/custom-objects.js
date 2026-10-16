@@ -212,24 +212,19 @@ export class RuleList extends Phaser.GameObjects.Container {
 	ruleCount;
 	ruleIndex;
 	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
-	RULE_TYPES_WEIGHTS = [6, 3, 2, -1, -1];
-	DIFFICULTY_WEIGHT_MODIFIERS = [0, 0.2, 0.4, 1, 1];
+	RULE_TYPES_WEIGHTS = [3, -0.75, -0.75, -6, -8];
+	DIFFICULTY_WEIGHT_MODIFIERS = [0.1, 0.75, 0.75, 2, 2];
 	PROPERTIES_BATCH_SIZE = 10;
-	MAX_REGENERATE_ATTEMPT = 10;
-	TARGET_ACCEPT_COUNT = 6;
-	TARGET_REJECT_COUNT = 3;
-	LERP = 0.3;
+	MAX_REGENERATE_ATTEMPT = 30;
+	TARGET_ACCEPT_COUNT = 4;
+	TARGET_REJECT_COUNT = 4;
+	LERP = 0.4;
+	WORD_WRAP_WIDTH = 544;
+	MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE = 656;
 
 	constructor(scene, x, y) {
 		super(scene, x, y);
 		this.scene = scene;
-		this.initialY = y;
-		this.targetPosY = y;
-
-		this.rules.push(new Default());
-		this.ruleCount = 1;
-		this.ruleIndex = 1;
-		this.ruleNums.push(this.ruleIndex);
 
 		this.textObject = this.scene.add.rexBBCodeText(
 			0, 
@@ -239,31 +234,55 @@ export class RuleList extends Phaser.GameObjects.Container {
 				fontFamily: "Tengoku", 
 				fontSize:24, color: "#0E0F23", 
 				wordWrap: {
-				width: this.scene.scale.width / 2 - 80,
+				width: this.WORD_WRAP_WIDTH,
 				},
 			},
 		);
+		this.initialY = this.textObject.y;
+		this.targetPosY = this.textObject.y;
 
-		this.add(this.textObject)
+		this.rules.push(new Default());
+		this.ruleCount = 1;
+		this.ruleIndex = 1;
+		this.ruleNums.push(this.ruleIndex);
+
+		this.updateText();
+
+		const scrollBarX = this.WORD_WRAP_WIDTH + 32;
+		this.scrollBarBackgroundObject = this.scene.add.image(scrollBarX, 0, ASSET_KEYS.SCROLL_BAR_BACKGROUND).setScale(0.5, 1).setOrigin(0);
+		this.scrollBarObject = this.scene.add.image(scrollBarX, 0, ASSET_KEYS.SCROLL_BAR).setScale(0.5, 1).setOrigin(0).setAlpha(0);
+
+		this.add([this.textObject, this.scrollBarBackgroundObject, this.scrollBarObject]);
 
 		this.textObject.setInteractive().on("wheel", (pointer, dx, dy) => {
-			this.targetPosY += Math.round(-dy);
+			this.targetPosY += Math.round(-dy * 0.5);
+			this.scrollBarBackgroundObject.alpha += 0.2;
+			this.scrollBarObject.alpha += 0.2;
 		});
 	}
 	
 	update(time, delta) {
-		const minY = this.initialY - Math.max(0, 64 + this.textObject.displayHeight - this.scene.scale.height);
-		const maxY = this.initialY
+		const visibleHeight = Math.min(this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE, this.textObject.displayHeight);
+		const textMinY = this.initialY + visibleHeight - this.textObject.displayHeight;
+		const textMaxY = this.initialY
 
-		if (this.targetPosY < minY) {
-			this.targetPosY = (minY - this.targetPosY) * this.LERP + this.targetPosY;
+		if (this.targetPosY < textMinY) {
+			this.targetPosY = (textMinY - this.targetPosY) * this.LERP + this.targetPosY;
 		}
 
-		if (this.targetPosY > maxY) {
-			this.targetPosY = (maxY - this.targetPosY) * this.LERP + this.targetPosY;
+		if (this.targetPosY > textMaxY) {
+			this.targetPosY = (textMaxY - this.targetPosY) * this.LERP + this.targetPosY;
 		}
 
-		this.y = (this.targetPosY - this.y) * this.LERP + this.y;
+		this.textObject.y = (this.targetPosY - this.textObject.y) * this.LERP + this.textObject.y;
+
+		const visibleRatio = visibleHeight / this.textObject.displayHeight
+		this.scrollBarObject.displayHeight = this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE * visibleRatio;
+		const progressRatio = Math.min(Math.max((this.textObject.y - textMaxY) / (textMinY - textMaxY), 0), 1);
+		this.scrollBarObject.y = progressRatio * (this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE - this.scrollBarObject.displayHeight);
+
+		this.scrollBarBackgroundObject.alpha -= 0.005;
+		this.scrollBarObject.alpha -= 0.005;
 	}
 
 	getRule(difficulty = 0) {

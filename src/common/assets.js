@@ -6,6 +6,8 @@ export const ASSET_KEYS = Object.freeze({
   REJECT_BUTTON: 'REJECT_BUTTON',
   ACCEPT_BUTTON: 'ACCEPT_BUTTON',
   FLASHES: 'FLASHES',
+  SCROLL_BAR: 'SCROLL_BAR',
+  SCROLL_BAR_BACKGROUND: 'SCROLL_BAR_BACKGROUND',
 });
 
 export const IMAGE_ASSETS = [
@@ -28,6 +30,14 @@ export const IMAGE_ASSETS = [
   {
     assetKey: ASSET_KEYS.ACCEPT_BUTTON,
     path: 'assets/images/accept_button.png',
+  },
+  {
+    assetKey: ASSET_KEYS.SCROLL_BAR,
+    path: 'assets/images/scroll_bar.png',
+  },
+  {
+    assetKey: ASSET_KEYS.SCROLL_BAR_BACKGROUND,
+    path: 'assets/images/scroll_bar_background.png',
   },
 ];
 
