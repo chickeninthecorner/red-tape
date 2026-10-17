@@ -212,8 +212,15 @@ export class RuleList extends Phaser.GameObjects.Container {
 	ruleCount;
 	ruleIndex;
 	RULE_TYPES = [Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
-	RULE_TYPES_WEIGHTS = [2, 0, -1, -1, -4, -8];
-	DIFFICULTY_WEIGHT_MODIFIERS = [0.25, 0.5, 1, 1, 2, 2];
+	RULE_TYPES_DIFFICULTY_RANGES = [1, 2, 4, 6, 10, 100] // difficulty < 1 means lowest scaling
+	RULE_TYPES_WEIGHTS = [
+		[1],
+		[1, 2, 2],
+		[1, 2, 2, 2],
+		[1, 2, 2, 2, 2],
+		[1, 2, 3, 3, 3, 2],
+		[1, 2, 5, 5, 5, 2],
+	]
 	PROPERTIES_BATCH_SIZE = 10;
 	MAX_REGENERATE_ATTEMPT = 30;
 	TARGET_ACCEPT_COUNT = 4;
@@ -286,11 +293,13 @@ export class RuleList extends Phaser.GameObjects.Container {
 	}
 
 	getRule(difficulty = 0) {
-		const effectiveWeights = this.RULE_TYPES_WEIGHTS.map((weight, index) => {
-			return Math.max(0, weight + Math.floor(this.DIFFICULTY_WEIGHT_MODIFIERS[index] * difficulty));
-		});
-		const ruleType = weightedRandom(this.RULE_TYPES, effectiveWeights);
-		console.log(effectiveWeights);
+		let weightsIndex = 0;
+		while(difficulty >= this.RULE_TYPES_DIFFICULTY_RANGES[weightsIndex]) {
+			weightsIndex += 1;
+		}
+		const weights = this.RULE_TYPES_WEIGHTS[weightsIndex];
+		const ruleType = weightedRandom(this.RULE_TYPES, weights);
+		console.log(weights);
 
 		const numAccept = this.getActionCount("accept");
 		const numReject = this.getActionCount("reject");

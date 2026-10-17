@@ -103,7 +103,7 @@ export class IsAndIs extends Rule {
 	}
 
 	get text() {
-		return `${this.actionText} if ${this.traitStatements[0].text} and .${this.traitStatements[1].text}`;
+		return `${this.actionText} if ${this.traitStatements[0].text} and ${this.traitStatements[1].text}.`;
 	}
 }
 
