@@ -1,5 +1,5 @@
 import { ASSET_KEYS } from './assets.js';
-import { Default, Is, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree } from '../common/rule.js';
+import { Default, Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree } from '../common/rule.js';
 
 export class Item extends Phaser.GameObjects.Container {
 	LERP = 0.1;
@@ -211,9 +211,9 @@ export class RuleList extends Phaser.GameObjects.Container {
 	propertiesList = [];
 	ruleCount;
 	ruleIndex;
-	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
-	RULE_TYPES_WEIGHTS = [3, -0.75, -0.75, -4, -8];
-	DIFFICULTY_WEIGHT_MODIFIERS = [0.25, 0.75, 0.75, 2, 2];
+	RULE_TYPES = [Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
+	RULE_TYPES_WEIGHTS = [2, 0, -1, -1, -4, -8];
+	DIFFICULTY_WEIGHT_MODIFIERS = [0.25, 0.5, 1, 1, 2, 2];
 	PROPERTIES_BATCH_SIZE = 10;
 	MAX_REGENERATE_ATTEMPT = 30;
 	TARGET_ACCEPT_COUNT = 4;

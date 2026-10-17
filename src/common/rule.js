@@ -88,6 +88,25 @@ export class Is extends Rule {
 }
 
 
+export class IsAndIs extends Rule {
+	constructor(action = null) {
+		super(2, action);
+	}
+
+	check(color, number, letter) {
+		const traitStatementsResults = this.getTraitStatementResults(color, number, letter);
+
+		if (traitStatementsResults[0] && traitStatementsResults[1]) {
+			return this.action;
+		}
+		return "neutral";
+	}
+
+	get text() {
+		return `${this.actionText} if ${this.traitStatements[0].text} and .${this.traitStatements[1].text}`;
+	}
+}
+
 export class IsAndNot extends Rule {
 	constructor(action = null) {
 		super(2, action);
