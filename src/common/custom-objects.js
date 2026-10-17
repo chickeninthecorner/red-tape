@@ -1,12 +1,34 @@
 import { ASSET_KEYS } from './assets.js';
 import { Default, Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree } from '../common/rule.js';
 
+class ParticleDrag extends Phaser.GameObjects.Particles.ParticleProcessor {
+    constructor(retention = 0.90) {
+        super();
+        this.retention = retention;
+    }
+    update(particle) {
+        particle.velocityX *= this.retention;
+        particle.velocityY *= this.retention;
+    }
+}
+
 export class Item extends Phaser.GameObjects.Container {
 	LERP = 0.1;
 
 	constructor(scene, x, y, color, number, letter) {
 		super(scene, x - 500, y);
 		this.scene = scene;
+
+		this.emitter = scene.add.particles(0, 0, ASSET_KEYS.SQUARES, {
+			frame: color,
+			speed: { max: 1000, min: 100 },
+			angle: { min: -180, max: 180 },
+			lifespan: { min: 100, max: 1000 },
+			scale: { min: 0.01, max: 0.3},
+			alpha: { start: 0.5, end: 0.0 },
+			emitting: false,
+		});
+		this.emitter.addParticleProcessor(new ParticleDrag(0.9));
 
 		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.SQUARES, scene.color).setScale(0.875);
 		this.spriteObject.rotation += Phaser.Math.FloatBetween(-0.5, 0.5);
@@ -30,12 +52,25 @@ export class Item extends Phaser.GameObjects.Container {
 			}
 		).setOrigin(0.5);
 
-		this.add([this.spriteObject, this.textObject]);
+		this.add([this.emitter, this.spriteObject, this.textObject]);
 	}
 
 	update(time, delta) {
 		this.spriteObject.rotation += 0.0001 * delta;
 		this.x = (this.scene.scale.width / 4 - this.x) * this.LERP + this.x;
+	}
+
+	prepareDestroy() {
+		this.spriteObject.alpha = 0;
+		this.textObject.alpha = 0;
+
+		this.emitter.explode(25, 0, 0)
+
+		this.scene.time.addEvent({
+			delay: 1000,
+			callback: () => this.destroy(),
+			callbackScope: this
+		});
 	}
 }
 

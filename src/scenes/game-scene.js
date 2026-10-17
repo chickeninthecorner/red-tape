@@ -32,9 +32,9 @@ export class GameScene extends Phaser.Scene {
   create() {
     this.objects = [];
 
-    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0);
+    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0).setDepth(0);
 
-    this.ruleListObject = new RuleList(this, this.scale.width / 2 + 32, 32).setDepth(1);
+    this.ruleListObject = new RuleList(this, this.scale.width / 2 + 32, 32).setDepth(2);
     this.ruleListObject.addRule();
     this.add.existing(this.ruleListObject);
 
@@ -43,11 +43,11 @@ export class GameScene extends Phaser.Scene {
     this.createNewItem();
     this.objects.push(this.ruleListObject);
 
-    this.acceptButtonObject = new AcceptButton(this, 468, 624).setDepth(0);
+    this.acceptButtonObject = new AcceptButton(this, 468, 624).setDepth(2);
     this.add.existing(this.acceptButtonObject);
     this.objects.push(this.acceptButtonObject);
 
-    this.rejectButtonObject = new RejectButton(this, 172, 624).setDepth(0);
+    this.rejectButtonObject = new RejectButton(this, 172, 624).setDepth(2);
     this.add.existing(this.rejectButtonObject);
     this.objects.push(this.rejectButtonObject);
     
@@ -61,11 +61,11 @@ export class GameScene extends Phaser.Scene {
     
     this.corrects = 0;
     this.score = 0;
-    this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 1);
+    this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 1).setDepth(2);
     this.scoreTextObject.y += this.scoreTextObject.displayHeight;
 
-    this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR_BACKGROUND).setOrigin(0);
-    this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0);
+    this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR_BACKGROUND).setOrigin(0).setDepth(2);
+    this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0).setDepth(2);
   }
 
   update(time, delta) {
@@ -88,12 +88,12 @@ export class GameScene extends Phaser.Scene {
       if (this.corrects % 10 == 0) {
         if (this.ruleListObject.length == this.MAX_RULES) {
           this.ruleListObject.spliceRule(1);
-          const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "modifiedRules").setDepth(1);
+          const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "modifiedRules").setDepth(3);
           this.add.existing(flash);
           this.objects.push(flash);
         }
         else{
-          const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(1);
+          const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "newRule").setDepth(3);
           this.add.existing(flash);
           this.objects.push(flash);
         }
@@ -124,7 +124,7 @@ export class GameScene extends Phaser.Scene {
       
       this.scoreTextObject.scale = this.SCORE_TEXT_OBJECT_MAX_SCALE;
     } else {
-      const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(1);;
+      const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(3);
       this.add.existing(flash);
       this.objects.push(flash);
 
@@ -140,9 +140,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   createNewItem() {
-    console.log("test");
     if (typeof this.currentItemObject != "undefined") {
-      this.currentItemObject.destroy();
+      this.currentItemObject.prepareDestroy();
       const index = this.objects.indexOf(this.currentItemObject);
       this.objects.splice(index, 1)
     }
@@ -157,7 +156,7 @@ export class GameScene extends Phaser.Scene {
 
     this.correctAction = this.ruleListObject.getCorrectAction(this.color, this.number, this.letter);
 
-    this.currentItemObject = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter)
+    this.currentItemObject = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter).setDepth(1);
     this.add.existing(this.currentItemObject);
     this.objects.push(this.currentItemObject);
   }
