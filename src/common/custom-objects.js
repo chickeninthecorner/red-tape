@@ -190,7 +190,7 @@ export class Flash extends Phaser.GameObjects.Container {
 				text = "MODIFIED\nRULES";
 		}
 
-		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.FLASHES, frame);
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.FLASHES, frame).setScale(2).setOrigin(0.75, 0.5);
 		this.textObject = scene.add.text(
 			0, 
 			0, 
@@ -212,7 +212,7 @@ export class Flash extends Phaser.GameObjects.Container {
 	}
 
 	update(time, delta) {
-		this.alpha = Math.sqrt(this.timer.getRemaining() / this.MAX_TIME);
+		this.alpha = this.timer.getRemaining() / this.MAX_TIME;
 	}
 
 	onTimerComplete() {

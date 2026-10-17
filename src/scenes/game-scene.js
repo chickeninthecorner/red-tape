@@ -32,7 +32,7 @@ export class GameScene extends Phaser.Scene {
   create() {
     this.objects = [];
 
-    this.add.image(0, 0, ASSET_KEYS.BACKGROUND).setOrigin(0).setDepth(0);
+    this.add.image(this.scale.width / 2, this.scale.height / 2, ASSET_KEYS.BACKGROUND).setScale(2).setDepth(0);
 
     this.ruleListObject = new RuleList(this, this.scale.width / 2 + 32, 32).setDepth(2);
     this.ruleListObject.addRule();
@@ -123,7 +123,8 @@ export class GameScene extends Phaser.Scene {
       this.createNewItem();
       
       this.scoreTextObject.scale = this.SCORE_TEXT_OBJECT_MAX_SCALE;
-    } else {
+    } 
+    else {
       const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(3);
       this.add.existing(flash);
       this.objects.push(flash);
@@ -134,6 +135,8 @@ export class GameScene extends Phaser.Scene {
           delay: this.timer.getRemaining() - this.TIME_PENALTY,
         });
       }
+
+      this.cameras.main.shake(500, 0.005);
 
       this.createNewItem();
     }
