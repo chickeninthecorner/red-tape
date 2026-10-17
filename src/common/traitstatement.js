@@ -8,7 +8,7 @@ function getUniqueLetters(word) {
 
 class Statement {
 	validAnswers = [];
-	NOUNS = ["time", "mind", "bomb", "hour", "help", "risk", "task", "pain", "clue", "flaw", "game"];
+	NOUNS = ["beach", "chief", "badge", "cabin", "dance", "faith", "guide"];
 
 	constructor(trait) {
 		if (trait == "color") {
@@ -34,7 +34,7 @@ class Statement {
 			}
 		}
 		else if (trait == "number") {
-			const statementType = Phaser.Utils.Array.GetRandom(["prime", "odd", "even", "perfectSquare"]);
+			const statementType = Phaser.Utils.Array.GetRandom(["prime", "odd", "even", "perfectSquare", "greaterThan5"]);
 
 			switch (statementType) {
 				case "prime":	
@@ -52,6 +52,10 @@ class Statement {
 				case "perfectSquare":
 					this.validAnswers = [0, 1, 4, 9];
 					this.text = "is a perfect square";
+					break;
+				case "greaterThan5":
+					this.validAnswers = [6, 7, 8, 9];
+					this.text = "is greater than 5";
 					break;
 			}
 		}

@@ -212,8 +212,8 @@ export class RuleList extends Phaser.GameObjects.Container {
 	ruleCount;
 	ruleIndex;
 	RULE_TYPES = [Is, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
-	RULE_TYPES_WEIGHTS = [3, -0.75, -0.75, -6, -8];
-	DIFFICULTY_WEIGHT_MODIFIERS = [0.1, 0.75, 0.75, 2, 2];
+	RULE_TYPES_WEIGHTS = [3, -0.75, -0.75, -4, -8];
+	DIFFICULTY_WEIGHT_MODIFIERS = [0.25, 0.75, 0.75, 2, 2];
 	PROPERTIES_BATCH_SIZE = 10;
 	MAX_REGENERATE_ATTEMPT = 30;
 	TARGET_ACCEPT_COUNT = 4;
@@ -294,10 +294,10 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 		const numAccept = this.getActionCount("accept");
 		const numReject = this.getActionCount("reject");
-		if (numReject == 0 || numAccept > numReject + 1) {
+		if (numReject == 0 || numAccept > numReject) {
 			return new ruleType("reject");
 		}
-		else if (numReject > numAccept + 1) {
+		else if (numReject > numAccept) {
 			return new ruleType("accept");
 		}
 		else {
