@@ -10,6 +10,7 @@ export const ASSET_KEYS = Object.freeze({
   SCROLL_BAR_BACKGROUND: 'SCROLL_BAR_BACKGROUND',
   EMPTY_BACKGROUND: 'EMPTY_BACKGROUND',
   GENERIC_BUTTON: 'GENERIC_BUTTON',
+  LOADING_FRAME: 'LOADING_FRAME',
 });
 
 export const IMAGE_ASSETS = [
@@ -48,6 +49,10 @@ export const IMAGE_ASSETS = [
   {
     assetKey: ASSET_KEYS.GENERIC_BUTTON,
     path: 'assets/images/generic_button.png',
+  },
+  {
+    assetKey: ASSET_KEYS.LOADING_FRAME,
+    path: 'assets/images/loading_frame.png',
   },
 ];
 

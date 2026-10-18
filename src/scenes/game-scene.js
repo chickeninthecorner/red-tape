@@ -1,4 +1,4 @@
-import { Item, AcceptButton, RejectButton, Flash, RuleList } from '../common/custom-objects.js';
+import { Item, AcceptButton, RejectButton, Flash, RuleList, LoadingFrame } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 
@@ -36,6 +36,10 @@ export class GameScene extends Phaser.Scene {
    * @returns {void}
    */
   create() {
+    this.loadingFrameObject = new LoadingFrame(this, this.scale.width / 2, this.scale.height / 2, "out").setDepth(99);
+    this.add.existing(this.loadingFrameObject);
+    this.objects.push(this.loadingFrameObject);
+
     this.add.image(this.scale.width / 2, this.scale.height / 2, ASSET_KEYS.BACKGROUND).setScale(2).setDepth(0);
 
     this.ruleListObject = new RuleList(this, this.scale.width / 2 + 32, 32).setDepth(2);
@@ -126,19 +130,27 @@ export class GameScene extends Phaser.Scene {
       this.scoreTextObject.scale = this.SCORE_TEXT_OBJECT_MAX_SCALE;
     } 
     else {
-      const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(3);
-      this.add.existing(flash);
-      this.objects.push(flash);
-
       if (!this.timer.paused)
       {
         this.wrongs += 1;
-        this.timer.reset({
-          delay: this.timer.getRemaining() - this.TIME_PENALTY,
-          callback: this.onTimerComplete,
-          callbackScope: this,
-        });
+
+        const remainingTime = this.timer.getRemaining();
+
+        if (remainingTime - this.TIME_PENALTY <= 0) { // instantly transition if not any time left
+          this.onTimerComplete();
+        }
+        else {
+              this.timer.reset({
+              delay: this.timer.getRemaining() - this.TIME_PENALTY,
+              callback: this.onTimerComplete,
+              callbackScope: this,
+            });
+        }
       }
+
+      const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(3);
+      this.add.existing(flash);
+      this.objects.push(flash);
 
       this.cameras.main.shake(500, 0.005);
 

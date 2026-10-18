@@ -209,9 +209,7 @@ export class RestartButton extends Phaser.GameObjects.Container {
 	press() {
 		this.disableInteractive();
 
-		this.scene.time.delayedCall(0, () => {
-			this.scene.scene.start(SCENE_KEYS.GAME_SCENE);
-		});
+		this.scene.prepareRestart();
 	}
 }
 
@@ -513,3 +511,51 @@ export class RuleList extends Phaser.GameObjects.Container {
 }
 
 
+function easeInCubic(x) {
+	return x * x * x;
+}
+
+
+export class LoadingFrame extends Phaser.GameObjects.Sprite {
+	DURATION = 0.5 * 1000;
+	MAX_DISPLACEMENT = 720;
+
+	constructor(scene, x, y, loadType, completeFn) {
+		super(scene, x, y, ASSET_KEYS.LOADING_FRAME);
+		this.scene = scene
+		this.initialY = y;
+		this.loadType = loadType
+		this.completeFn = completeFn
+
+		this.setInteractive();
+		this.on('pointerdown', () => undefined); // block accept/reject inputs
+
+		this.timer = this.scene.time.addEvent({
+			delay: this.DURATION,
+			callback: this.onTimerComplete,
+			callbackScope: this
+		});
+	}
+
+	update() {
+		const progress = 1 - this.timer.getRemaining() / this.DURATION
+		if (this.loadType == "in") {
+			this.y = this.initialY - this.MAX_DISPLACEMENT * easeInCubic(1 - progress);
+		}
+		else if (this.loadType == "out") {
+			this.y = this.initialY - this.MAX_DISPLACEMENT * easeInCubic(progress);
+		}
+	}
+
+	onTimerComplete() {
+		const index = this.scene.objects.indexOf(this);
+		this.scene.objects.splice(index, 1);
+
+		if (this.completeFn != undefined) {
+			this.completeFn();
+		}
+		else {
+			this.destroy();
+		}
+	}
+}
