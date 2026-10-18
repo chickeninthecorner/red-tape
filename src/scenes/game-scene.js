@@ -5,7 +5,7 @@ import { ASSET_KEYS } from '../common/assets.js';
 export class GameScene extends Phaser.Scene {
   INITIAL_TIME = 50 * 1000;
   MAX_TIME = 100 * 1000
-  TIME_PENALTY = 20 * 1000;
+  TIME_PENALTY = 15 * 1000;
   TIME_REWARD = 10 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
   MAX_RULES = 8;
@@ -96,7 +96,14 @@ export class GameScene extends Phaser.Scene {
       }
     })
     const remainingTime = this.timer.getRemaining();
-    this.timerTextObject.text = `${(remainingTime / 1000).toFixed(1)}s`;
+    let digits;
+    if (remainingTime < this.TIME_PENALTY) {
+      digits = 2;
+    }
+    else {
+      digits = 1;
+    }
+    this.timerTextObject.text = `${(remainingTime / 1000).toFixed(digits)}s`;
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);
 
     this.scoreTextObject.scale = this.scoreTextObject.scale - (this.scoreTextObject.scale - 1) * this.SCORE_TEXT_OBJECT_SCALE_LERP;
