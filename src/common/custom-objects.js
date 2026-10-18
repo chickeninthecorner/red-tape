@@ -513,9 +513,10 @@ export class RuleList extends Phaser.GameObjects.Container {
 		if (this.ruleCount < 3) {
 			result = 	"INSTRUCTIONS"
 						+ "\n------------"
-						+ "\n1. Check rules from newest to oldest."
+						+ "\n1. Check rules from newest to top."
 						+ "\n2. Follow the first rule that applies."
-						+ "\n3. The timer starts after you choose correctly. Get the highest score you can!\n\n";
+						+ "\n3. New rules will be added from the bottom of this list. "
+						+ "\n4. The timer starts after you choose correctly. Get a high score!\n\n";
 		}
 		else {
 			result = "";
