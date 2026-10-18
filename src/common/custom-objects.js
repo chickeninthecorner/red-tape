@@ -295,19 +295,19 @@ function weightedRandom(items, weightsInput) {
 
 export class RuleList extends Phaser.GameObjects.Container {
 	RULE_TYPES = [Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
-	RULE_TYPES_DIFFICULTY_RANGES = [1, 2, 4, 6, 10, 100] // difficulty < 1 means lowest scaling
+	RULE_TYPES_DIFFICULTY_RANGES = [1, 2, 3, 4, 5, 100] // difficulty < 1 means lowest scaling
 	RULE_TYPES_WEIGHTS = [
 		[1],
-		[1, 2, 2],
+		[0, 2, 2],
 		[1, 2, 2, 1],
 		[1, 2, 2, 2, 1],
-		[1, 2, 2, 2, 2, 1],
-		[1, 2, 3, 3, 3, 2],
+		[1, 1, 1, 2, 2, 1],
+		[1, 1, 1, 2, 2, 2],
 	]
 	PROPERTIES_BATCH_SIZE = 5;
 	MAX_REGENERATE_ATTEMPTS = 10;
-	TARGET_ACCEPT_COUNT = 4;
-	TARGET_REJECT_COUNT = 4;
+	TARGET_ACCEPT_COUNT = 2;
+	TARGET_REJECT_COUNT = 2;
 	LERP = 0.4;
 	WORD_WRAP_WIDTH = 544;
 	MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE = 656;
@@ -352,33 +352,45 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 		this.textObject.setInteractive().on("wheel", (pointer, dx, dy) => {
 			this.targetPosY += Math.round(-dy * 0.5);
-			this.scrollBarBackgroundObject.alpha += 0.2;
-			this.scrollBarObject.alpha += 0.2;
+			this.revealScrollBar();
 		});
 	}
 	
 	update(time, delta) {
-		const visibleHeight = Math.min(this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE, this.textObject.displayHeight);
-		const textMinY = this.initialY + visibleHeight - this.textObject.displayHeight;
-		const textMaxY = this.initialY
-
-		if (this.targetPosY < textMinY) {
-			this.targetPosY = (textMinY - this.targetPosY) * this.LERP + this.targetPosY;
+		if (this.targetPosY < this.textMinY) {
+			this.targetPosY = (this.textMinY - this.targetPosY) * this.LERP + this.targetPosY;
 		}
 
-		if (this.targetPosY > textMaxY) {
-			this.targetPosY = (textMaxY - this.targetPosY) * this.LERP + this.targetPosY;
+		if (this.targetPosY > this.textMaxY) {
+			this.targetPosY = (this.textMaxY - this.targetPosY) * this.LERP + this.targetPosY;
 		}
 
 		this.textObject.y = (this.targetPosY - this.textObject.y) * this.LERP + this.textObject.y;
 
-		const visibleRatio = visibleHeight / this.textObject.displayHeight
+		const visibleRatio = this.visibleHeight / this.textObject.displayHeight
 		this.scrollBarObject.displayHeight = this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE * visibleRatio;
-		const progressRatio = Math.min(Math.max((this.textObject.y - textMaxY) / (textMinY - textMaxY), 0), 1);
+		const progressRatio = Math.min(Math.max((this.textObject.y - this.textMaxY) / (this.textMinY - this.textMaxY), 0), 1);
 		this.scrollBarObject.y = progressRatio * (this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE - this.scrollBarObject.displayHeight);
 
 		this.scrollBarBackgroundObject.alpha -= 0.005;
 		this.scrollBarObject.alpha -= 0.005;
+	}
+
+	revealScrollBar() {
+		this.scrollBarBackgroundObject.alpha = 1;
+		this.scrollBarObject.alpha = 1;
+	}
+
+	get visibleHeight() {
+		return Math.min(this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE, this.textObject.displayHeight);
+	}
+
+	get textMinY() {
+		return this.initialY + this.visibleHeight - this.textObject.displayHeight;
+	}
+
+	get textMaxY() {
+		return this.initialY;
 	}
 
 	getRule(difficulty = 0) {
@@ -412,6 +424,8 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.ruleNums.push(this.ruleIndex);
 
 		this.updateText();
+
+		this.scrollToBottom();
 	}
 
 	spliceRule(index) {
@@ -424,6 +438,11 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 	updateText() {
 		this.textObject.text = this.text;
+	}
+
+	scrollToBottom() {
+		this.targetPosY = this.textMinY;
+		this.revealScrollBar();
 	}
 
 	get text() {
