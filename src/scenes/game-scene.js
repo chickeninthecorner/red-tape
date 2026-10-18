@@ -3,8 +3,8 @@ import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 
 export class GameScene extends Phaser.Scene {
-  INITIAL_TIME = 30 * 1000;
-  MAX_TIME = 60 * 1000
+  INITIAL_TIME = 50 * 1000;
+  MAX_TIME = 50 * 1000
   TIME_PENALTY = 15 * 1000;
   TIME_REWARD = 10 * 1000;
   TIME_TO_SCORE_CONVERSION = 1 / 1000;
@@ -137,6 +137,7 @@ export class GameScene extends Phaser.Scene {
       }
       else
       {
+        
         const remainingTime = this.timer.getRemaining();
         bonusScore = Math.max(0, Math.ceil((remainingTime + this.TIME_REWARD - this.MAX_TIME) * this.TIME_TO_SCORE_CONVERSION));
 

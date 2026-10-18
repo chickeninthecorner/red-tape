@@ -2,4 +2,5 @@ export const SCENE_KEYS = Object.freeze({
   PRELOAD_SCENE: 'PRELOAD_SCENE',
   GAME_SCENE: 'GAME_SCENE',
   LOSE_SCENE: 'LOSE_SCENE',
+  MAIN_SCENE: 'MAIN_SCENE',
 });

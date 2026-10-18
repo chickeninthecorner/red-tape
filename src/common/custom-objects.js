@@ -214,8 +214,53 @@ export class RestartButton extends Phaser.GameObjects.Container {
 }
 
 
+export class PlayButton extends Phaser.GameObjects.Container {
+	MAX_SCALE = 1.05;
+	LERP = 0.2;
+
+	constructor(scene, x, y) {
+		super(scene, x, y);
+		this.scene = scene;
+
+		this.hovered = false;
+
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.GENERIC_BUTTON).setScale(1 , 1).setInteractive();
+		this.spriteObject.on('pointerover', () => this.hovered = true);
+		this.spriteObject.on('pointerout', () => this.hovered = false);
+		this.spriteObject.on('pointerdown', () => this.press());
+
+		this.textObject = scene.add.text(
+			0, 
+			0, 
+			"Play", 
+			{
+				fontFamily: "Tengoku", 
+				fontSize: 48, 
+				color: "#FFFFFF",
+			}
+		).setOrigin(0.5);
+
+		this.add([this.spriteObject, this.textObject]);
+	}
+
+	update() {
+		if (this.hovered) {
+			this.setScale((this.MAX_SCALE - this.scale) * this.LERP + this.scale);
+		}
+		else {
+			this.setScale((1 - this.scale) * this.LERP + this.scale);
+		}
+	}
+
+	press() {
+		this.disableInteractive();
+
+		this.scene.prepareStart();
+	}
+}
+
 export class Flash extends Phaser.GameObjects.Container {
-	MAX_TIME = 1 * 1000;
+	MAX_TIME = 2 * 1000;
 
 	constructor(scene, x, y, type) {
 		super(scene, x, y);
@@ -336,10 +381,9 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.initialY = this.textObject.y;
 		this.targetPosY = this.textObject.y;
 
-		// add default rule
-		this.rules.push(new Default());
 		this.ruleCount += 1;
 		this.ruleIndex += 1;
+		this.rules.push(new Default());
 		this.ruleNums.push(this.ruleIndex);
 
 		this.updateText();
@@ -446,10 +490,21 @@ export class RuleList extends Phaser.GameObjects.Container {
 	}
 
 	get text() {
-		let result = "";
+		let result 
+		
+		if (this.ruleCount < 3) {
+			result = 	"INSTRUCTIONS"
+						+ "\n------------"
+						+ "\n1. Check rules from newest to oldest."
+						+ "\n2. Follow the first rule that applies."
+						+ "\n3. The timer starts after you choose correctly. Get the highest score you can!\n\n";
+		}
+		else {
+			result = "";
+		}
 
 		for (let i = 0; i < this.ruleCount; i++) {
-			if (result !== "") {
+			if (i > 0){
 				result += "\n\n";
 			}
 
@@ -472,7 +527,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 	}
 
 	getCorrectAction(color, number, letter) {
-		let result;
+		let result = "accept";
 
 		this.rules.forEach(rule => {
 			const action = rule.check(color, number, letter);

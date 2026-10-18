@@ -52,21 +52,19 @@ class Rule {
 	}
 }
 
-
 export class Default extends Rule {
 	constructor(action = null) {
 		super(0, "accept");
 	}
 
 	get text() {
-		return `- By default, ${this.actionText} all items.\n- Prioritize the newest rules that apply to the object.`;
+		return "[color=green]ACCEPT[/color] all Items.";
 	}
 
 	check(color, number, letter) {
-		return "accept"
+		return "accept";
 	}
 }
-
 
 export class Is extends Rule {
 	constructor(action = null) {
