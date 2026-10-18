@@ -299,13 +299,13 @@ export class RuleList extends Phaser.GameObjects.Container {
 	RULE_TYPES_WEIGHTS = [
 		[1],
 		[1, 2, 2],
-		[1, 2, 2, 2],
-		[1, 2, 2, 2, 2],
+		[1, 2, 2, 1],
+		[1, 2, 2, 2, 1],
+		[1, 2, 2, 2, 2, 1],
 		[1, 2, 3, 3, 3, 2],
-		[1, 2, 5, 5, 5, 2],
 	]
-	PROPERTIES_BATCH_SIZE = 10;
-	MAX_REGENERATE_ATTEMPT = 30;
+	PROPERTIES_BATCH_SIZE = 5;
+	MAX_REGENERATE_ATTEMPTS = 10;
 	TARGET_ACCEPT_COUNT = 4;
 	TARGET_REJECT_COUNT = 4;
 	LERP = 0.4;
@@ -467,7 +467,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 	generateItemProperties() {
 		if (this.propertiesList.length == 0) {
-			let attempts = this.MAX_REGENERATE_ATTEMPT
+			let attempts = this.MAX_REGENERATE_ATTEMPTS
 			let accepts = 0;
 			let rejects = 0;
 			while (this.propertiesList.length < this.PROPERTIES_BATCH_SIZE) {

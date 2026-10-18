@@ -11,7 +11,8 @@ export class GameScene extends Phaser.Scene {
   MAX_RULES = 8;
   SCORE_TEXT_OBJECT_MAX_SCALE = 1.5;
   SCORE_TEXT_OBJECT_SCALE_LERP = 0.2;
-  CORRECTS_TO_DIFFICULTY_CONVERSION = 0.1;
+  CORRECTS_NEEDED_PER_DIFFICULTY = 5;
+  CORRECTS_NEEDED_PER_RULE = 5;
   objects;
   itemIndex;
   corrects;
@@ -105,7 +106,7 @@ export class GameScene extends Phaser.Scene {
     if (answer == this.correctAction) {
       this.corrects += 1;
 
-      if (this.corrects % 10 == 0) {
+      if (this.corrects % this.CORRECTS_NEEDED_PER_RULE == 0) {
         if (this.ruleListObject.ruleCount == this.MAX_RULES) {
           this.ruleListObject.spliceRule(1);
           const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "modifiedRules").setDepth(3);
@@ -118,7 +119,7 @@ export class GameScene extends Phaser.Scene {
           this.objects.push(flash);
         }
 
-        this.ruleListObject.addRule(this.corrects * this.CORRECTS_TO_DIFFICULTY_CONVERSION);
+        this.ruleListObject.addRule(this.corrects / this.CORRECTS_NEEDED_PER_DIFFICULTY);
       }
       
       let bonusScore;
