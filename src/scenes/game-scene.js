@@ -143,6 +143,8 @@ export class GameScene extends Phaser.Scene {
         const newRemainingTime = Math.min(remainingTime + this.TIME_REWARD, this.MAX_TIME)
         this.timer.reset({
             delay: newRemainingTime,
+            callback: this.onTimerComplete,
+            callbackScope: this,
         });
       }
 
