@@ -188,3 +188,34 @@ export class AtLeastTwoOfThree extends Rule {
 		return `${this.actionText} if at least 2 out of 3 of the following are true:\n- ${this.traitStatements[0].text}\n- ${this.traitStatements[1].text}\n- ${this.traitStatements[2].text}`;
 	}
 }
+
+export class ConsecutiveOutOfFour extends Rule {
+	constructor(action = null) {
+		super(4, action);
+	}
+
+	check(color, number, letter) {
+		const traitStatementsResults = this.getTraitStatementResults(color, number, letter);
+
+		let met = false;
+		for(let i = 1; i < 4; i++) {
+			if(traitStatementsResults[i - 1] && traitStatementsResults[i]) {
+				met = true;
+				break;
+			}
+		}
+
+		if (met) {
+			return this.action;
+		}
+		return "neutral";
+	}
+
+	get text() {
+		return 	`${this.actionText} if at least 2 consecutive statements from the following are true:`
+				+ `\n- ${this.traitStatements[0].text}`
+				+ `\n- ${this.traitStatements[1].text}`
+				+ `\n- ${this.traitStatements[2].text}`
+				+ `\n- ${this.traitStatements[3].text}`;
+	}
+}
