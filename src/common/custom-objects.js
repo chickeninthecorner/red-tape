@@ -69,7 +69,7 @@ export class Item extends Phaser.GameObjects.Container {
 
 		this.scene.time.addEvent({
 			delay: 1000,
-			callback: () => this.destroy(),
+			callback: this.destroy,
 			callbackScope: this
 		});
 	}
@@ -511,3 +511,5 @@ export class RuleList extends Phaser.GameObjects.Container {
 		return this.propertiesList.pop();
 	}
 }
+
+
