@@ -295,7 +295,7 @@ function weightedRandom(items, weightsInput) {
 
 export class RuleList extends Phaser.GameObjects.Container {
 	RULE_TYPES = [Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
-	RULE_TYPES_DIFFICULTY_RANGES = [1, 2, 3, 4, 5, 100] // difficulty < 1 means lowest scaling
+	RULE_TYPES_DIFFICULTY_RANGES = [1, 2, 4, 6, 8, 100] // difficulty < 1 means lowest scaling
 	RULE_TYPES_WEIGHTS = [
 		[1],
 		[0, 2, 2],

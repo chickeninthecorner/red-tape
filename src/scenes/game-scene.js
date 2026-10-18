@@ -3,8 +3,8 @@ import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 
 export class GameScene extends Phaser.Scene {
-  INITIAL_TIME = 50 * 1000;
-  MAX_TIME = 100 * 1000
+  INITIAL_TIME = 30 * 1000;
+  MAX_TIME = 60 * 1000
   TIME_PENALTY = 15 * 1000;
   TIME_REWARD = 10 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
