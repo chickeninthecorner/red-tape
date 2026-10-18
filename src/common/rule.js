@@ -59,7 +59,7 @@ export class Default extends Rule {
 	}
 
 	get text() {
-		return `${this.actionText} all objects, but prioritize the newest rules that apply to the object.`;
+		return `- By default, ${this.actionText} all items.\n- Prioritize the newest rules that apply to the object.`;
 	}
 
 	check(color, number, letter) {

@@ -294,11 +294,6 @@ function weightedRandom(items, weightsInput) {
 
 
 export class RuleList extends Phaser.GameObjects.Container {
-	rules = [];
-	ruleNums = [];
-	propertiesList = [];
-	ruleCount;
-	ruleIndex;
 	RULE_TYPES = [Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree];
 	RULE_TYPES_DIFFICULTY_RANGES = [1, 2, 4, 6, 10, 100] // difficulty < 1 means lowest scaling
 	RULE_TYPES_WEIGHTS = [
@@ -316,6 +311,11 @@ export class RuleList extends Phaser.GameObjects.Container {
 	LERP = 0.4;
 	WORD_WRAP_WIDTH = 544;
 	MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE = 656;
+	rules = [];
+	ruleNums = [];
+	propertiesList = [];
+	ruleCount = 0;
+	ruleIndex = 0;
 
 	constructor(scene, x, y) {
 		super(scene, x, y);
@@ -336,14 +336,15 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.initialY = this.textObject.y;
 		this.targetPosY = this.textObject.y;
 
+		// add default rule
 		this.rules.push(new Default());
-		this.ruleCount = 1;
-		this.ruleIndex = 1;
+		this.ruleCount += 1;
+		this.ruleIndex += 1;
 		this.ruleNums.push(this.ruleIndex);
 
 		this.updateText();
 
-		const scrollBarX = this.WORD_WRAP_WIDTH + 32;
+		const scrollBarX = this.WORD_WRAP_WIDTH + 16;
 		this.scrollBarBackgroundObject = this.scene.add.image(scrollBarX, 0, ASSET_KEYS.SCROLL_BAR_BACKGROUND).setScale(0.5, 1).setOrigin(0);
 		this.scrollBarObject = this.scene.add.image(scrollBarX, 0, ASSET_KEYS.SCROLL_BAR).setScale(0.5, 1).setOrigin(0).setAlpha(0);
 
