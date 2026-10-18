@@ -242,8 +242,7 @@ export class Flash extends Phaser.GameObjects.Container {
 				break;
 		}
 
-		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.FLASHES, frame).setScale(2).setOrigin(0.75, 0.5).setInteractive();
-		this.spriteObject.on('pointerdown', () => undefined); // block accept/reject inputs
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.FLASHES, frame).setScale(2).setOrigin(0.75, 0.5).setInteractive(); // block accept/reject inputs
 
 		this.textObject = scene.add.text(
 			0, 
@@ -527,8 +526,7 @@ export class LoadingFrame extends Phaser.GameObjects.Sprite {
 		this.loadType = loadType
 		this.completeFn = completeFn
 
-		this.setInteractive();
-		this.on('pointerdown', () => undefined); // block accept/reject inputs
+		this.setInteractive(); // block accept/reject inputs
 
 		this.timer = this.scene.time.addEvent({
 			delay: this.DURATION,
