@@ -237,9 +237,16 @@ export class Flash extends Phaser.GameObjects.Container {
 			case "modifiedRules":
 				frame = "newRule";
 				text = "MODIFIED\nRULES";
+				break;
+			case "lose":
+				frame = "wrong";
+				text = "";
+				break;
 		}
 
-		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.FLASHES, frame).setScale(2).setOrigin(0.75, 0.5);
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.FLASHES, frame).setScale(2).setOrigin(0.75, 0.5).setInteractive();
+		this.spriteObject.on('pointerdown', () => undefined); // block accept/reject inputs
+
 		this.textObject = scene.add.text(
 			0, 
 			0, 

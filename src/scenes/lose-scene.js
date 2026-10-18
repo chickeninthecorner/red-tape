@@ -1,4 +1,4 @@
-import { RestartButton } from '../common/custom-objects.js';
+import { RestartButton, Flash } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 
@@ -13,6 +13,8 @@ export class LoseScene extends Phaser.Scene {
 	this.score = score;
 	this.corrects = corrects;
 	this.wrongs = wrongs;
+
+	this.objects = [];
   }
 
   /**
@@ -71,7 +73,11 @@ export class LoseScene extends Phaser.Scene {
 	const restartButton = new RestartButton(this, this.scale.width / 2, statsTextObject.y + statsTextObject.displayHeight + 64);
 	restartButton.y += restartButton.spriteObject.displayHeight / 2; // container has not setOrigin method
 	this.add.existing(restartButton);
-	this.objects = [restartButton];
+	this.objects.push(restartButton);
+
+	const flash = new Flash(this, this.scale.width, this.scale.height / 2, "lose").setDepth(3).setScale(2);
+	this.add.existing(flash);
+	this.objects.push(flash);
 
 	this.cameras.main.shake(500, 0.01)
   }
