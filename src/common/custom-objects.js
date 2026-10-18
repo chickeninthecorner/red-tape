@@ -515,12 +515,12 @@ export class LoadingFrame extends Phaser.GameObjects.Sprite {
 	DURATION = 0.5 * 1000;
 	MAX_DISPLACEMENT = 720;
 
-	constructor(scene, x, y, loadType, completeFn) {
+	constructor(scene, x, y, loadType, nextScene) {
 		super(scene, x, y, ASSET_KEYS.LOADING_FRAME);
 		this.scene = scene
 		this.initialY = y;
-		this.loadType = loadType
-		this.completeFn = completeFn
+		this.loadType = loadType;
+		this.nextScene = nextScene;
 
 		this.setInteractive(); // block accept/reject inputs
 
@@ -545,8 +545,8 @@ export class LoadingFrame extends Phaser.GameObjects.Sprite {
 		const index = this.scene.objects.indexOf(this);
 		this.scene.objects.splice(index, 1);
 
-		if (this.completeFn != undefined) {
-			this.completeFn();
+		if (this.loadType == "in") {
+			this.scene.scene.start(this.nextScene);
 		}
 		else {
 			this.destroy();

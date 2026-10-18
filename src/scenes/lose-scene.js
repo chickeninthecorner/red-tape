@@ -92,12 +92,8 @@ export class LoseScene extends Phaser.Scene {
   }
 
   prepareRestart() {
-	this.loadingFrameObject = new LoadingFrame(this, this.scale.width / 2, this.scale.height / 2, "in", this.goBack).setDepth(99);
+	this.loadingFrameObject = new LoadingFrame(this, this.scale.width / 2, this.scale.height / 2, "in", SCENE_KEYS.GAME_SCENE).setDepth(99);
 	this.add.existing(this.loadingFrameObject);
 	this.objects.push(this.loadingFrameObject);
-  }
-
-  goBack() {
-	this.scene.scene.start(SCENE_KEYS.GAME_SCENE);
   }
 }
