@@ -3,6 +3,11 @@ import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 
 export class LoseScene extends Phaser.Scene {
+	score;
+	corrects;
+	wrongs;
+	objects;
+
   constructor() {
 	super({
 	  key: SCENE_KEYS.LOSE_SCENE,

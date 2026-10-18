@@ -12,6 +12,21 @@ export class GameScene extends Phaser.Scene {
   SCORE_TEXT_OBJECT_MAX_SCALE = 1.5;
   SCORE_TEXT_OBJECT_SCALE_LERP = 0.2;
   CORRECTS_TO_DIFFICULTY_CONVERSION = 0.1;
+  objects;
+  itemIndex;
+  corrects;
+  wrongs;
+  score;
+  loadingFrameObject;
+  ruleListObject;
+  itemIndexTextObject;
+  acceptButtonObject;
+  rejectButtonObject;
+  timer;
+  timerTextObject;
+  scoreTextObject;
+  progressBarObject;
+  currentItemObject;
 
   constructor() {
     super({
@@ -91,7 +106,7 @@ export class GameScene extends Phaser.Scene {
       this.corrects += 1;
 
       if (this.corrects % 10 == 0) {
-        if (this.ruleListObject.length == this.MAX_RULES) {
+        if (this.ruleListObject.ruleCount == this.MAX_RULES) {
           this.ruleListObject.spliceRule(1);
           const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "modifiedRules").setDepth(3);
           this.add.existing(flash);
@@ -115,10 +130,11 @@ export class GameScene extends Phaser.Scene {
       else
       {
         const remainingTime = this.timer.getRemaining();
-        bonusScore = Math.max(0, Math.ceil((this.timer.getRemaining() + this.TIME_REWARD - this.MAX_TIME) * this.TIME_TO_SCORE_CONVERSION));
+        bonusScore = Math.max(0, Math.ceil((remainingTime + this.TIME_REWARD - this.MAX_TIME) * this.TIME_TO_SCORE_CONVERSION));
 
+        const newRemainingTime = Math.min(remainingTime + this.TIME_REWARD, this.MAX_TIME)
         this.timer.reset({
-            delay: Math.min(remainingTime + this.TIME_REWARD, this.MAX_TIME),
+            delay: newRemainingTime,
         });
       }
 
@@ -134,14 +150,14 @@ export class GameScene extends Phaser.Scene {
       {
         this.wrongs += 1;
 
-        const remainingTime = this.timer.getRemaining();
+        const newRemainingTime = this.timer.getRemaining() - this.TIME_PENALTY;
 
-        if (remainingTime - this.TIME_PENALTY <= 0) { // instantly transition if not any time left
+        if (newRemainingTime <= 0) { // instantly transition if not any time left
           this.onTimerComplete();
         }
         else {
               this.timer.reset({
-              delay: this.timer.getRemaining() - this.TIME_PENALTY,
+              delay: newRemainingTime,
               callback: this.onTimerComplete,
               callbackScope: this,
             });
