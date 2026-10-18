@@ -34,7 +34,7 @@ class Statement {
 			}
 		}
 		else if (trait == "number") {
-			const statementType = Phaser.Utils.Array.GetRandom(["prime", "odd", "even", "perfectSquare", "greaterThan5"]);
+			const statementType = Phaser.Utils.Array.GetRandom(["prime", "odd", "even", "perfectSquare", "moreThanOrEqual5", "lessThan5"]);
 
 			switch (statementType) {
 				case "prime":	
@@ -53,9 +53,13 @@ class Statement {
 					this.validAnswers = [0, 1, 4, 9];
 					this.text = "is a perfect square";
 					break;
-				case "greaterThan5":
-					this.validAnswers = [6, 7, 8, 9];
-					this.text = "is greater than 5";
+				case "moreThanOrEqual5":
+					this.validAnswers = [5, 6, 7, 8, 9];
+					this.text = "is greater than or equal to 5";
+					break;
+				case "lessThan5":
+					this.validAnswers = [0, 1, 2, 3, 4];
+					this.text = "is less than 5";
 					break;
 			}
 		}

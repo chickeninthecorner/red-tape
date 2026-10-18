@@ -363,6 +363,8 @@ export class RuleList extends Phaser.GameObjects.Container {
 	propertiesList = [];
 	ruleCount = 0;
 	ruleIndex = 0;
+	held = false;
+	holdOriginY = 0;
 
 	constructor(scene, x, y) {
 		super(scene, x, y);
@@ -396,10 +398,19 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 		this.add([this.textObject, this.scrollBarBackgroundObject, this.scrollBarObject]);
 
-		this.textObject.setInteractive().on("wheel", (pointer, dx, dy) => {
+		this.textObject.setInteractive({ draggable: true })
+		this.textObject.on("wheel", (pointer, dx, dy) => {
 			this.targetPosY += Math.round(-dy * 0.5);
 			this.revealScrollBar();
 		});
+
+		this.textObject.on("dragstart", (pointer, dragX, dragY) => {
+			this.holdOriginY = 0;
+		})
+		this.textObject.on("drag", (pointer, dragX, dragY) => {
+			this.targetPosY += dragY - this.holdOriginY;
+			this.holdOriginY = dragY;
+		})
 	}
 	
 	update(time, delta) {
@@ -466,10 +477,10 @@ export class RuleList extends Phaser.GameObjects.Container {
 		const ruleType = weightedRandom(effectiveRuleTypes, effectiveWeights);
 		const numAccept = this.getActionCount("accept");
 		const numReject = this.getActionCount("reject");
-		if (numReject == 0 || numAccept > numReject) {
+		if (numReject == 0 || numAccept > numReject + 1) {
 			return new ruleType("reject");
 		}
-		else if (numReject > numAccept) {
+		else if (numReject > numAccept + 1) {
 			return new ruleType("accept");
 		}
 		else {
