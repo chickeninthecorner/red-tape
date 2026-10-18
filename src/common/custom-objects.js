@@ -410,6 +410,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.textObject.on("drag", (pointer, dragX, dragY) => {
 			this.targetPosY += dragY - this.holdOriginY;
 			this.holdOriginY = dragY;
+			this.revealScrollBar();
 		})
 	}
 	
