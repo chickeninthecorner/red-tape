@@ -2,6 +2,7 @@ import Phaser from './lib/phaser.js';
 import { SCENE_KEYS } from './common/scene-keys.js';
 import { GameScene } from './scenes/game-scene.js';
 import { PreloadScene } from './scenes/preload-scene.js';
+import { LoseScene } from './scenes/lose-scene.js';
 
 /** @type {Phaser.Types.Core.GameConfig} */
 const gameConfig = {
@@ -26,4 +27,5 @@ const game = new Phaser.Game(gameConfig);
 
 game.scene.add(SCENE_KEYS.PRELOAD_SCENE, PreloadScene);
 game.scene.add(SCENE_KEYS.GAME_SCENE, GameScene);
+game.scene.add(SCENE_KEYS.LOSE_SCENE, LoseScene);
 game.scene.start(SCENE_KEYS.PRELOAD_SCENE);

@@ -1,4 +1,5 @@
 import { ASSET_KEYS } from './assets.js';
+import { SCENE_KEYS } from '../common/scene-keys.js';
 import { Default, Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree } from '../common/rule.js';
 
 class ParticleDrag extends Phaser.GameObjects.Particles.ParticleProcessor {
@@ -167,6 +168,54 @@ export class RejectButton extends Phaser.GameObjects.Container {
 }
 
 
+export class RestartButton extends Phaser.GameObjects.Container {
+	MAX_SCALE = 1.05;
+	LERP = 0.2;
+
+	constructor(scene, x, y) {
+		super(scene, x, y);
+		this.scene = scene;
+
+		this.hovered = false;
+
+		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.GENERIC_BUTTON).setScale(1 , 1).setInteractive();
+		this.spriteObject.on('pointerover', () => this.hovered = true);
+		this.spriteObject.on('pointerout', () => this.hovered = false);
+		this.spriteObject.on('pointerdown', () => this.press());
+
+		this.textObject = scene.add.text(
+			0, 
+			0, 
+			"Restart", 
+			{
+				fontFamily: "Tengoku", 
+				fontSize: 48, 
+				color: "#FFFFFF",
+			}
+		).setOrigin(0.5);
+
+		this.add([this.spriteObject, this.textObject]);
+	}
+
+	update() {
+		if (this.hovered) {
+			this.setScale((this.MAX_SCALE - this.scale) * this.LERP + this.scale);
+		}
+		else {
+			this.setScale((1 - this.scale) * this.LERP + this.scale);
+		}
+	}
+
+	press() {
+		this.disableInteractive();
+
+		this.scene.time.delayedCall(0, () => {
+			this.scene.scene.start(SCENE_KEYS.GAME_SCENE);
+		});
+	}
+}
+
+
 export class Flash extends Phaser.GameObjects.Container {
 	MAX_TIME = 1 * 1000;
 
@@ -271,7 +320,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.textObject = this.scene.add.rexBBCodeText(
 			0, 
 			0, 
-			this.text, 
+			"", 
 			{
 				fontFamily: "Tengoku", 
 				fontSize:24, color: "#0E0F23", 

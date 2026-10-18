@@ -6,7 +6,7 @@ export class GameScene extends Phaser.Scene {
   INITIAL_TIME = 50 * 1000;
   MAX_TIME = 100 * 1000
   TIME_PENALTY = 15 * 1000;
-  TIME_REWARD = 7.5 * 1000;
+  TIME_REWARD = 10 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
   MAX_RULES = 8;
   SCORE_TEXT_OBJECT_MAX_SCALE = 1.5;
@@ -19,9 +19,15 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  // init() {
+  init() {
+    this.objects = [];
 
-  // }
+    this.itemIndex = 0;
+
+    this.corrects = 0;
+    this.wrongs = 0;
+    this.score = 0;
+  }
 
   /**
    * @public
@@ -30,18 +36,15 @@ export class GameScene extends Phaser.Scene {
    * @returns {void}
    */
   create() {
-    this.objects = [];
-
     this.add.image(this.scale.width / 2, this.scale.height / 2, ASSET_KEYS.BACKGROUND).setScale(2).setDepth(0);
 
     this.ruleListObject = new RuleList(this, this.scale.width / 2 + 32, 32).setDepth(2);
     this.ruleListObject.addRule();
     this.add.existing(this.ruleListObject);
+    this.objects.push(this.ruleListObject);
 
-    this.itemIndex = 0;
     this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5).setDepth(1);
     this.createNewItem();
-    this.objects.push(this.ruleListObject);
 
     this.acceptButtonObject = new AcceptButton(this, 468, 624).setDepth(2);
     this.add.existing(this.acceptButtonObject);
@@ -54,13 +57,11 @@ export class GameScene extends Phaser.Scene {
     this.timer = this.time.addEvent({
         delay: this.INITIAL_TIME,
         paused: true,
-        // callback: this.onTimerComplete,
-        // callbackScope: this
+        callback: this.onTimerComplete,
+        callbackScope: this,
     });
-    this.timerTextObject = this.add.text(64, 32, this.timer.getRemainingSeconds(), {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"});
-    
-    this.corrects = 0;
-    this.score = 0;
+    this.timerTextObject = this.add.text(64, 32, `${this.timer.getRemainingSeconds()}s`, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"});
+
     this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 1).setDepth(2);
     this.scoreTextObject.y += this.scoreTextObject.displayHeight;
 
@@ -75,7 +76,7 @@ export class GameScene extends Phaser.Scene {
       }
     })
     const remainingTime = this.timer.getRemaining();
-    this.timerTextObject.text = (remainingTime / 1000).toFixed(1);
+    this.timerTextObject.text = `${(remainingTime / 1000).toFixed(1)}s`;
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);
 
     this.scoreTextObject.scale = this.scoreTextObject.scale - (this.scoreTextObject.scale - 1) * this.SCORE_TEXT_OBJECT_SCALE_LERP;
@@ -125,6 +126,8 @@ export class GameScene extends Phaser.Scene {
       this.scoreTextObject.scale = this.SCORE_TEXT_OBJECT_MAX_SCALE;
     } 
     else {
+      this.wrongs += 1;
+
       const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(3);
       this.add.existing(flash);
       this.objects.push(flash);
@@ -133,6 +136,8 @@ export class GameScene extends Phaser.Scene {
       {
         this.timer.reset({
           delay: this.timer.getRemaining() - this.TIME_PENALTY,
+          callback: this.onTimerComplete,
+          callbackScope: this,
         });
       }
 
@@ -143,10 +148,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   createNewItem() {
-    if (typeof this.currentItemObject != "undefined") {
+    if (this.itemIndex > 0) {
       this.currentItemObject.prepareDestroy();
       const index = this.objects.indexOf(this.currentItemObject);
-      this.objects.splice(index, 1)
+      this.objects.splice(index, 1);
     }
 
     this.itemIndex += 1;
@@ -162,5 +167,9 @@ export class GameScene extends Phaser.Scene {
     this.currentItemObject = new Item(this, this.scale.width / 4, this.scale.height / 2, this.color, this.number, this.letter).setDepth(1);
     this.add.existing(this.currentItemObject);
     this.objects.push(this.currentItemObject);
+  }
+
+  onTimerComplete() {
+    this.scene.start(SCENE_KEYS.LOSE_SCENE, {score: this.score, corrects: this.corrects, wrongs: this.wrongs});
   }
 }
