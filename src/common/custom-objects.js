@@ -57,7 +57,7 @@ export class Item extends Phaser.GameObjects.Container {
 	}
 
 	update() {
-		this.spriteObject.rotation += 0.0007;
+		this.spriteObject.angle += 90 / 600;
 		this.x = (this.scene.scale.width / 4 - this.x) * this.LERP + this.x;
 	}
 
