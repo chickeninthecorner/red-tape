@@ -5,7 +5,7 @@ import { ASSET_KEYS } from '../common/assets.js';
 export class GameScene extends Phaser.Scene {
   INITIAL_TIME = 50 * 1000;
   MAX_TIME = 100 * 1000
-  TIME_PENALTY = 15 * 1000;
+  TIME_PENALTY = 20 * 1000;
   TIME_REWARD = 10 * 1000;
   TIME_TO_SCORE_CONVERSION = 0.1 / 1000;
   MAX_RULES = 8;
@@ -126,14 +126,13 @@ export class GameScene extends Phaser.Scene {
       this.scoreTextObject.scale = this.SCORE_TEXT_OBJECT_MAX_SCALE;
     } 
     else {
-      this.wrongs += 1;
-
       const flash = new Flash(this, this.scale.width / 4, this.scale.height / 2, "wrong").setDepth(3);
       this.add.existing(flash);
       this.objects.push(flash);
 
       if (!this.timer.paused)
       {
+        this.wrongs += 1;
         this.timer.reset({
           delay: this.timer.getRemaining() - this.TIME_PENALTY,
           callback: this.onTimerComplete,
