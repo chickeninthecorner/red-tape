@@ -16,8 +16,6 @@ export class PreloadScene extends Phaser.Scene {
     TEXTURE_ATLAS_ASSETS.forEach((asset) => {
       this.load.atlas(asset.assetKey, asset.textureURL, asset.atlasURL);
     });
-    this.load.font("AlteHaasGroteskBold", "assets/fonts/AlteHaasGroteskBold.ttf", "truetype");
-    this.load.font("PressStart2P", "assets/fonts/PressStart2P.ttf", "truetype");
     this.load.font("Tengoku", "assets/fonts/Tengoku.ttf", "truetype");
     this.load.plugin('rexbbcodetextplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js', true);
   }
