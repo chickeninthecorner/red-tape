@@ -140,7 +140,7 @@ export class IsNorIs extends Rule {
 	}
 
 	get text() {
-		return `${this.actionText} if neither ${this.traitStatements[0].text} or ${this.traitStatements[1].text}.`;
+		return `${this.actionText} if neither ${this.traitStatements[0].text} nor ${this.traitStatements[1].text}.`;
 	}
 }
 
