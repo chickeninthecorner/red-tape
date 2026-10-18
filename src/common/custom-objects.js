@@ -56,8 +56,8 @@ export class Item extends Phaser.GameObjects.Container {
 		this.add([this.emitter, this.spriteObject, this.textObject]);
 	}
 
-	update(time, delta) {
-		this.spriteObject.rotation += 0.0001 * delta;
+	update() {
+		this.spriteObject.rotation += 0.0007;
 		this.x = (this.scene.scale.width / 4 - this.x) * this.LERP + this.x;
 	}
 
@@ -413,7 +413,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 		})
 	}
 	
-	update(time, delta) {
+	update() {
 		if (this.targetPosY < this.textMinY) {
 			this.targetPosY = (this.textMinY - this.targetPosY) * this.LERP + this.targetPosY;
 		}
@@ -524,10 +524,9 @@ export class RuleList extends Phaser.GameObjects.Container {
 		if (this.ruleCount < 3) {
 			result = 	"INSTRUCTIONS"
 						+ "\n------------"
-						+ "\n1. Check rules from newest to top."
-						+ "\n2. Follow the first rule that applies."
-						+ "\n3. New rules will be added from the bottom of this list. "
-						+ "\n4. The timer starts after you choose correctly. Get a high score!\n\n";
+						+ "\n1. Follow the first rule from bottom to top that applies."
+						+ "\n2. New rules will be added to the bottom of this list. "
+						+ "\n3. The timer starts after you choose correctly. Get a high score!\n\n";
 		}
 		else {
 			result = "";

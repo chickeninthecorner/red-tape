@@ -89,10 +89,10 @@ export class GameScene extends Phaser.Scene {
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0).setDepth(2);
   }
 
-  update(time, delta) {
+  update() {
     this.objects.forEach(object => {
       if (typeof object.update == 'function') {
-        object.update(time, delta);
+        object.update();
       }
     })
     const remainingTime = this.timer.getRemaining();
