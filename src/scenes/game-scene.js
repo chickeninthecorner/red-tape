@@ -1,4 +1,4 @@
-import { Item, AcceptButton, RejectButton, Flash, RuleList, LoadingFrame } from '../common/custom-objects.js';
+import { Item, AcceptButton, RejectButton, Flash, RuleList, LoadingFrame, MiniRestartButton } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 
@@ -63,6 +63,14 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.ruleListObject);
     this.objects.push(this.ruleListObject);
 
+    this.timer = this.time.addEvent({
+        delay: this.INITIAL_TIME,
+        paused: true,
+        callback: this.onTimerComplete,
+        callbackScope: this,
+    });
+    this.timerTextObject = this.add.text(64 + 256, 32, this.timer.getRemainingSeconds(), {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"}).setOrigin(0.5, 0);
+
     this.itemIndexTextObject = this.add.text(this.scale.width / 4, 176, `Item #${this.itemIndex}`, {fontFamily: "Tengoku", fontSize:36  , color: "#86615C"}).setOrigin(0.5).setDepth(1);
     this.createNewItem();
 
@@ -74,19 +82,16 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.rejectButtonObject);
     this.objects.push(this.rejectButtonObject);
     
-    this.timer = this.time.addEvent({
-        delay: this.INITIAL_TIME,
-        paused: true,
-        callback: this.onTimerComplete,
-        callbackScope: this,
-    });
-    this.timerTextObject = this.add.text(64, 32, `${this.timer.getRemainingSeconds()}s`, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23"});
+    
 
-    this.scoreTextObject =  this.add.text(576, 32, this.score, {fontFamily: "Tengoku", fontSize:48, color: "#0E0F23", align: "right"}).setOrigin(1, 1).setDepth(2);
-    this.scoreTextObject.y += this.scoreTextObject.displayHeight;
+    this.scoreTextObject =  this.add.text(576, 32 + 56, this.score, {fontFamily: "Tengoku", fontSize:36, color: "#0E0F23", align: "right"}).setOrigin(1, 1).setDepth(2);
 
     this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR_BACKGROUND).setOrigin(0).setDepth(2);
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0).setDepth(2);
+
+    this.miniRestartButtonObject = new MiniRestartButton(this, 64, 32);
+    this.add.existing(this.miniRestartButtonObject);
+    this.objects.push(this.miniRestartButtonObject);
   }
 
   update() {
@@ -103,7 +108,7 @@ export class GameScene extends Phaser.Scene {
     else {
       digits = 1;
     }
-    this.timerTextObject.text = `${(remainingTime / 1000).toFixed(digits)}s`;
+    this.timerTextObject.text = (remainingTime / 1000).toFixed(digits);
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);
 
     this.scoreTextObject.scale = this.scoreTextObject.scale - (this.scoreTextObject.scale - 1) * this.SCORE_TEXT_OBJECT_SCALE_LERP;
@@ -209,5 +214,11 @@ export class GameScene extends Phaser.Scene {
 
   onTimerComplete() {
     this.scene.start(SCENE_KEYS.LOSE_SCENE, {score: this.score, corrects: this.corrects, wrongs: this.wrongs});
+  }
+
+  prepareRestart() {
+    this.loadingFrameObject = new LoadingFrame(this, this.scale.width / 2, this.scale.height / 2, "in", SCENE_KEYS.GAME_SCENE).setDepth(99);
+    this.add.existing(this.loadingFrameObject);
+    this.objects.push(this.loadingFrameObject);
   }
 }

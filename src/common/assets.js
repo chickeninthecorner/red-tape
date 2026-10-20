@@ -11,6 +11,9 @@ export const ASSET_KEYS = Object.freeze({
   EMPTY_BACKGROUND: 'EMPTY_BACKGROUND',
   GENERIC_BUTTON: 'GENERIC_BUTTON',
   LOADING_FRAME: 'LOADING_FRAME',
+  RESTART_MINI_BUTTON_BACKGROUND: 'RESTART_MINI_BUTTON_BACKGROUND',
+  RESTART_MINI_BUTTON: 'RESTART_MINI_BUTTON',
+  RESTART_MINI_BUTTON_OVERLAY: 'RESTART_MINI_BUTTON_OVERLAY',
 });
 
 export const IMAGE_ASSETS = [
@@ -53,6 +56,14 @@ export const IMAGE_ASSETS = [
   {
     assetKey: ASSET_KEYS.LOADING_FRAME,
     path: 'assets/images/loading_frame.png',
+  },
+  {
+    assetKey: ASSET_KEYS.RESTART_MINI_BUTTON_BACKGROUND,
+    path: 'assets/images/restart_mini_button_background.png',
+  },
+  {
+    assetKey: ASSET_KEYS.RESTART_MINI_BUTTON,
+    path: 'assets/images/restart_mini_button.png',
   },
 ];
 

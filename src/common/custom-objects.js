@@ -214,15 +214,51 @@ export class RestartButton extends Phaser.GameObjects.Container {
 }
 
 
-export class PlayButton extends Phaser.GameObjects.Container {
-	MAX_SCALE = 1.05;
-	LERP = 0.2;
+export class MiniRestartButton extends Phaser.GameObjects.Container {
+	progress = 0.0;
+	pressed = false;
+	frozen = false;
 
 	constructor(scene, x, y) {
 		super(scene, x, y);
 		this.scene = scene;
 
-		this.hovered = false;
+		this.backgroundSpriteObject = scene.add.image(0, 0, ASSET_KEYS.RESTART_MINI_BUTTON_BACKGROUND).setOrigin(0, 0).setInteractive();
+		this.backgroundSpriteObject.on('pointerdown', () => this.pressed = true);
+		this.backgroundSpriteObject.on('pointerup', () => this.pressed = false);
+
+		this.fillSpriteObject = scene.add.image(0, 0, ASSET_KEYS.RESTART_MINI_BUTTON).setOrigin(0, 0);
+
+		this.add([this.backgroundSpriteObject, this.fillSpriteObject]);
+	}
+
+	update() {
+		if (this.pressed) {
+			const increase = 0.1 / Math.pow(1 + this.progress, 4)
+			this.progress = Math.min(this.progress + increase, 1.0);
+			if (this.progress == 1.0) {
+				this.frozen = true;
+				this.pressed = false;
+				this.disableInteractive();
+				this.scene.prepareRestart();
+			}
+		}
+		else if (!this.frozen) {
+			this.progress = Math.max(0.0, this.progress - 0.01);
+		}
+		this.fillSpriteObject.setCrop(0, 0, 0.1 + 56 * this.progress * 0.85, 56);
+	}
+}
+
+
+export class PlayButton extends Phaser.GameObjects.Container {
+	MAX_SCALE = 1.05;
+	LERP = 0.2;
+	hovered = false;
+
+	constructor(scene, x, y) {
+		super(scene, x, y);
+		this.scene = scene;
 
 		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.GENERIC_BUTTON).setScale(1 , 1).setInteractive();
 		this.spriteObject.on('pointerover', () => this.hovered = true);
@@ -260,7 +296,7 @@ export class PlayButton extends Phaser.GameObjects.Container {
 }
 
 export class Flash extends Phaser.GameObjects.Container {
-	MAX_TIME = 2 * 1000;
+	DURATION = 1.25  * 1000;
 
 	constructor(scene, x, y, type) {
 		super(scene, x, y);
@@ -303,14 +339,14 @@ export class Flash extends Phaser.GameObjects.Container {
 		this.add([this.spriteObject, this.textObject]);
 
 		this.timer = this.scene.time.addEvent({
-			delay: this.MAX_TIME,
+			delay: this.DURATION,
 			callback: this.onTimerComplete,
 			callbackScope: this
 		});
 	}
 
 	update(time, delta) {
-		this.alpha = this.timer.getRemaining() / this.MAX_TIME;
+		this.alpha = this.timer.getRemaining() / this.DURATION;
 	}
 
 	onTimerComplete() {
@@ -358,6 +394,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 	LERP = 0.4;
 	WORD_WRAP_WIDTH = 544;
 	MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE = 656;
+	MAX_SCROLL_BAR_LENGTH = 656;
 	rules = [];
 	ruleNums = [];
 	propertiesList = [];
@@ -393,10 +430,10 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.updateText();
 
 		const scrollBarX = this.WORD_WRAP_WIDTH + 16;
-		this.scrollBarBackgroundObject = this.scene.add.image(scrollBarX, 0, ASSET_KEYS.SCROLL_BAR_BACKGROUND).setScale(0.5, 1).setOrigin(0);
-		this.scrollBarObject = this.scene.add.image(scrollBarX, 0, ASSET_KEYS.SCROLL_BAR).setScale(0.5, 1).setOrigin(0).setAlpha(0);
+		this.scrollBarBackgroundSpriteObject = this.scene.add.image(scrollBarX, 0, ASSET_KEYS.SCROLL_BAR_BACKGROUND).setScale(0.5, 1).setOrigin(0);
+		this.scrollBarSpriteObject = this.scene.add.image(scrollBarX, 0, ASSET_KEYS.SCROLL_BAR).setScale(0.5, 1).setOrigin(0).setAlpha(0);
 
-		this.add([this.textObject, this.scrollBarBackgroundObject, this.scrollBarObject]);
+		this.add([this.textObject, this.scrollBarBackgroundSpriteObject, this.scrollBarSpriteObject]);
 
 		this.textObject.setInteractive({ draggable: true })
 		this.textObject.on("wheel", (pointer, dx, dy) => {
@@ -426,17 +463,17 @@ export class RuleList extends Phaser.GameObjects.Container {
 		this.textObject.y = (this.targetPosY - this.textObject.y) * this.LERP + this.textObject.y;
 
 		const visibleRatio = this.visibleHeight / this.textObject.displayHeight
-		this.scrollBarObject.displayHeight = this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE * visibleRatio;
+		this.scrollBarSpriteObject.displayHeight = this.MAX_SCROLL_BAR_LENGTH * visibleRatio;
 		const progressRatio = Math.min(Math.max((this.textObject.y - this.textMaxY) / (this.textMinY - this.textMaxY), 0), 1);
-		this.scrollBarObject.y = progressRatio * (this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE - this.scrollBarObject.displayHeight);
+		this.scrollBarSpriteObject.y = progressRatio * (this.MAX_TEXT_HEIGHT_BEFORE_SCROLLABLE - this.scrollBarSpriteObject.displayHeight);
 
-		this.scrollBarBackgroundObject.alpha -= 0.005;
-		this.scrollBarObject.alpha -= 0.005;
+		this.scrollBarBackgroundSpriteObject.alpha -= 0.005;
+		this.scrollBarSpriteObject.alpha -= 0.005;
 	}
 
 	revealScrollBar() {
-		this.scrollBarBackgroundObject.alpha = 1;
-		this.scrollBarObject.alpha = 1;
+		this.scrollBarBackgroundSpriteObject.alpha = 1;
+		this.scrollBarSpriteObject.alpha = 1;
 	}
 
 	get visibleHeight() {
@@ -617,7 +654,7 @@ function easeInCubic(x) {
 
 
 export class LoadingFrame extends Phaser.GameObjects.Sprite {
-	DURATION = 0.5 * 1000;
+	DURATION = 0.25 * 1000;
 	MAX_DISPLACEMENT = 720;
 
 	constructor(scene, x, y, loadType, nextScene) {
@@ -634,6 +671,8 @@ export class LoadingFrame extends Phaser.GameObjects.Sprite {
 			callback: this.onTimerComplete,
 			callbackScope: this
 		});
+
+		this.update();
 	}
 
 	update() {
