@@ -163,7 +163,7 @@ export class IsXorIs extends Rule {
 	}
 }
 
-export class AtLeastTwoOfThree extends Rule {
+export class AtLeastTwo extends Rule {
 	constructor(action = null) {
 		super(3, action);
 	}
@@ -190,7 +190,7 @@ export class AtLeastTwoOfThree extends Rule {
 }
 
 
-export class ConsecutiveOutOfFour extends Rule {
+export class Consecutive extends Rule {
 	constructor(action = null) {
 		super(4, action);
 	}
@@ -222,7 +222,7 @@ export class ConsecutiveOutOfFour extends Rule {
 }
 
 
-export class NoConsecutiveOutOfFour extends Rule {
+export class NoConsecutive extends Rule {
 	constructor(action = null) {
 		super(4, action);
 	}
@@ -250,5 +250,69 @@ export class NoConsecutiveOutOfFour extends Rule {
 				+ `\n- ${this.traitStatements[1].text}`
 				+ `\n- ${this.traitStatements[2].text}`
 				+ `\n- ${this.traitStatements[3].text}`;
+	}
+}
+
+
+export class ContiguousBlocks extends Rule {
+	constructor(action = null) {
+		super(4, action);
+	}
+
+	check(color, number, letter) {
+		const traitStatementsResults = this.getTraitStatementResults(color, number, letter);
+
+		let met = true;
+		let transitions = 1;
+
+		for(let i = 1; i < 4; i++) {
+			if(traitStatementsResults[i] != traitStatementsResults[i - 1]) {
+				if(transitions > 0) {
+					transitions -= 1;
+				}
+				else {
+					met = false;
+					break;
+				}
+			}
+		}
+
+		if (met) {
+			return this.action;
+		}
+		return "neutral";
+	}
+
+	get text() {
+		return 	`${this.actionText} if each truth value forms at most a single contiguous block from the following:`
+				+ `\n- ${this.traitStatements[0].text}`
+				+ `\n- ${this.traitStatements[1].text}`
+				+ `\n- ${this.traitStatements[2].text}`
+				+ `\n- ${this.traitStatements[3].text}`;
+	}
+}
+
+
+export class ExclusivePair extends Rule {
+	constructor(action = null) {
+		super(4, action);
+	}
+
+	check(color, number, letter) {
+		const traitStatementsResults = this.getTraitStatementResults(color, number, letter);
+
+		const pair1 = traitStatementsResults[0] && traitStatementsResults[1];
+		const pair2 = traitStatementsResults[2] && traitStatementsResults[3];
+
+		if ((pair1 || pair2) && pair1 != pair2) {
+			return this.action;
+		}
+		return "neutral";
+	}
+
+	get text() {
+		return 	`${this.actionText} if either are true, unless both are:`
+				+ `\n- ${this.traitStatements[0].text} and ${this.traitStatements[1].text}`
+				+ `\n- ${this.traitStatements[2].text} and ${this.traitStatements[3].text}`;
 	}
 }

@@ -1,6 +1,5 @@
 import { ASSET_KEYS } from './assets.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
-import { Default, Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree, ConsecutiveOutOfFour, NoConsecutiveOutOfFour } from '../common/rule.js';
 
 class ParticleDrag extends Phaser.GameObjects.Particles.ParticleProcessor {
     constructor(retention = 0.90) {
@@ -374,9 +373,12 @@ function weightedRandom(items, weightsInput) {
 }
 
 
+import { Default, Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwo, Consecutive, NoConsecutive, ExclusivePair, ContiguousBlocks } from '../common/rule.js';
+
+
 export class RuleList extends Phaser.GameObjects.Container {
-	RULE_TYPES = [Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwoOfThree, ConsecutiveOutOfFour, NoConsecutiveOutOfFour];
-	RULE_TYPES_DIFFICULTY_RANGES = [1, 2, 3, 4, 5, 6, 7, 100] // difficulty < 1 means lowest scaling
+	RULE_TYPES = [Is, IsAndIs, IsAndNot, IsNorIs, IsXorIs, AtLeastTwo, Consecutive, NoConsecutive, ExclusivePair, ContiguousBlocks];
+	RULE_TYPES_DIFFICULTY_RANGES = [1, 2, 3, 5, 7, 9, 11, 13, 15, 17, 100] // difficulty < 1 means lowest scaling
 	RULE_TYPES_WEIGHTS = [
 		[1],
 		[1, 1],
@@ -385,7 +387,10 @@ export class RuleList extends Phaser.GameObjects.Container {
 		[1, 2, 3, 3, 2],
 		[1, 1, 3, 3, 3, 2],
 		[1, 1, 3, 3, 3, 3, 2],
-		[1, 1, 3, 4, 4, 4, 3, 2]
+		[1, 1, 2, 2, 4, 4, 3, 2],
+		[1, 1, 2, 2, 4, 4, 3, 3, 2],
+		[1, 1, 2, 2, 4, 4, 3, 3, 3, 2],
+		[1, 1, 2, 2, 4, 4, 4, 4, 4, 4],
 	]
 	PROPERTIES_BATCH_SIZE = 5;
 	MAX_REGENERATE_ATTEMPTS = 10;
