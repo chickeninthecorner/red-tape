@@ -284,7 +284,7 @@ export class ContiguousBlocks extends Rule {
 	}
 
 	get text() {
-		return 	`${this.actionText} if each truth value forms at most a single contiguous block from the following:`
+		return 	`${this.actionText} if at most 2 contiguous blocks of truth values form from the following:`
 				+ `\n- ${this.traitStatements[0].text}`
 				+ `\n- ${this.traitStatements[1].text}`
 				+ `\n- ${this.traitStatements[2].text}`
