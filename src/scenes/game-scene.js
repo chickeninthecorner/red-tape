@@ -109,6 +109,7 @@ export class GameScene extends Phaser.Scene {
     this.timerTextObject.text = (remainingTime / 1000).toFixed(digits);
     this.progressBarObject.setScale(1 * remainingTime / this.MAX_TIME, 1);
 
+    // resets scale increase after scoring
     this.scoreTextObject.scale = this.scoreTextObject.scale - (this.scoreTextObject.scale - 1) * this.SCORE_TEXT_OBJECT_SCALE_LERP;
   }
 

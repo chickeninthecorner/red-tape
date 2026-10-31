@@ -25,6 +25,10 @@ export class MainScene extends Phaser.Scene {
    * @returns {void}
    */
   create() {
+	this.loadingFrameObject = new LoadingFrame(this, this.scale.width / 2, this.scale.height / 2, "out").setDepth(99);
+    this.add.existing(this.loadingFrameObject);
+    this.objects.push(this.loadingFrameObject);
+	
 	this.add.image(this.scale.width / 2, this.scale.height / 4, ASSET_KEYS.EMPTY_BACKGROUND).setScale(2);
 
 	const line1TextObject = this.add.text(
@@ -59,7 +63,7 @@ export class MainScene extends Phaser.Scene {
 		},
 	).setOrigin(0.5, 0);
 
-	const statsTextObject = this.add.rexBBCodeText(
+	const authorTextObject = this.add.rexBBCodeText(
 		this.scale.width / 2, 
 		line2TextObject.y + line2TextObject.displayHeight + 16,
 		"By chickeninthecorner", 
@@ -71,14 +75,29 @@ export class MainScene extends Phaser.Scene {
 
 	const playButton = new GenericButton(
 		this, 
-		this.scale.width / 2, 
-		statsTextObject.y + statsTextObject.displayHeight + 64,
+		this.scale.width * 2 / 5, 
+		authorTextObject.y + authorTextObject.displayHeight + 64,
 		"Start",
 		this.prepareStart
 	);
-	playButton.y += playButton.spriteObject.displayHeight / 2; // container has not setOrigin method
+	// container has not setOrigin method
+	playButton.y += playButton.spriteObject.displayHeight / 2;
+	playButton.x -= playButton.spriteObject.displayWidth / 2;
 	this.add.existing(playButton);
 	this.objects.push(playButton);
+
+	const tutorialButton = new GenericButton(
+		this, 
+		this.scale.width * 4 / 5, 
+		authorTextObject.y + authorTextObject.displayHeight + 64,
+		"Tutorial",
+		this.prepareTutorial
+	);
+	// container has not setOrigin method
+	tutorialButton.y += tutorialButton.spriteObject.displayHeight / 2;
+	tutorialButton.x -= tutorialButton.spriteObject.displayWidth / 2;
+	this.add.existing(tutorialButton);
+	this.objects.push(tutorialButton);
   }
 
   update() {
@@ -87,6 +106,12 @@ export class MainScene extends Phaser.Scene {
 
   prepareStart() {
 	this.loadingFrameObject = new LoadingFrame(this, this.scale.width / 2, this.scale.height / 2, "in", SCENE_KEYS.GAME_SCENE).setDepth(99);
+	this.add.existing(this.loadingFrameObject);
+	this.objects.push(this.loadingFrameObject);
+  }
+
+  prepareTutorial() {
+	this.loadingFrameObject = new LoadingFrame(this, this.scale.width / 2, this.scale.height / 2, "in", SCENE_KEYS.TUTORIAL_SCENE).setDepth(99);
 	this.add.existing(this.loadingFrameObject);
 	this.objects.push(this.loadingFrameObject);
   }

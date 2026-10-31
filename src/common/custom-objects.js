@@ -199,10 +199,10 @@ export class GenericButton extends Phaser.GameObjects.Container {
 
 	update() {
 		if (this.hovered) {
-			this.setScale((this.MAX_SCALE - this.scale) * this.LERP + this.scale);
+			this.spriteObject.setScale((this.MAX_SCALE - this.scale) * this.LERP + this.scale);
 		}
 		else {
-			this.setScale((1 - this.scale) * this.LERP + this.scale);
+			this.spriteObject.setScale((1 - this.scale) * this.LERP + this.scale);
 		}
 	}
 
@@ -349,6 +349,13 @@ export class RuleList extends Phaser.GameObjects.Container {
 		[1, 1, 2, 2, 4, 4, 3, 3, 3, 2],
 		[1, 1, 2, 2, 4, 4, 4, 4, 4, 4],
 	]
+	RULE_TYPES_DIFFICULTY_RANGES_TUTORIAL = [1, 2, 3, 5]
+	RULE_TYPES_WEIGHTS_TUTORIAL = [
+		[1],
+		[0, 1],
+		[0, 0, 1],
+		[0, 0, 0, 1],
+	]
 	PROPERTIES_BATCH_SIZE = 5;
 	MAX_REGENERATE_ATTEMPTS = 10;
 	TARGET_ACCEPT_COUNT = 2;
@@ -453,13 +460,22 @@ export class RuleList extends Phaser.GameObjects.Container {
 
 	getRule(difficulty = 0) {
 		let weightsIndex = 0;
-		while(difficulty >= this.RULE_TYPES_DIFFICULTY_RANGES[weightsIndex]) {
-			weightsIndex += 1;
-		}
-		
-		// prevent same rule type from being selected consecutively
 		const effectiveRuleTypes = [...this.RULE_TYPES];
-		const effectiveWeights = [...this.RULE_TYPES_WEIGHTS[weightsIndex]];
+		let effectiveWeights;
+		if (!this.tutorial) {
+			while(difficulty >= this.RULE_TYPES_DIFFICULTY_RANGES[weightsIndex]) {
+				weightsIndex += 1;
+			}
+			effectiveWeights = [...this.RULE_TYPES_WEIGHTS[weightsIndex]];
+		}
+		else {
+			while(difficulty >= this.RULE_TYPES_DIFFICULTY_RANGES_TUTORIAL[weightsIndex]) {
+				weightsIndex += 1;
+			}
+			effectiveWeights = [...this.RULE_TYPES_WEIGHTS_TUTORIAL[weightsIndex]]
+		}
+
+		// prevent same rule type from being selected consecutively
 		const lastRule = this.rules[this.ruleCount - 1];
 		const lastRuleName = lastRule.constructor.name ;
 		if (lastRuleName  != "Default") {
@@ -532,7 +548,7 @@ export class RuleList extends Phaser.GameObjects.Container {
 						+ "\n1. Follow the first rule from bottom to top that applies."
 						+ "\n2. New rules will be added to the bottom of this list."
 						+ "\n3. In tutorial mode, there is no timer."
-						+ "\n4. Hold the top-left button once you are ready.\n\n";
+						+ "\n\nScore 150 (or hold the top-left button) to exit the tutorial.\n\n";
 		}
 
 		for (let i = 0; i < this.ruleCount; i++) {
