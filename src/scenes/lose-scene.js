@@ -1,4 +1,4 @@
-import { RestartButton, Flash, LoadingFrame } from '../common/custom-objects.js';
+import { GenericButton, Flash, LoadingFrame } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 
@@ -75,7 +75,13 @@ export class LoseScene extends Phaser.Scene {
 		},
 	).setOrigin(0.5, 0);
 
-	const restartButton = new RestartButton(this, this.scale.width / 2, statsTextObject.y + statsTextObject.displayHeight + 64);
+	const restartButton = new GenericButton(
+		this, 
+		this.scale.width / 2,
+		statsTextObject.y + statsTextObject.displayHeight + 64,
+		"Restart",
+		this.prepareRestart
+	);
 	restartButton.y += restartButton.spriteObject.displayHeight / 2; // container has not setOrigin method
 	this.add.existing(restartButton);
 	this.objects.push(restartButton);

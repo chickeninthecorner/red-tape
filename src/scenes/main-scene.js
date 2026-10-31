@@ -1,4 +1,4 @@
-import { PlayButton, Flash, LoadingFrame } from '../common/custom-objects.js';
+import { GenericButton, LoadingFrame } from '../common/custom-objects.js';
 import { SCENE_KEYS } from '../common/scene-keys.js';
 import { ASSET_KEYS } from '../common/assets.js';
 
@@ -69,11 +69,16 @@ export class MainScene extends Phaser.Scene {
 		},
 	).setOrigin(0.5, 0);
 
-	const playButton = new PlayButton(this, this.scale.width / 2, statsTextObject.y + statsTextObject.displayHeight + 64);
+	const playButton = new GenericButton(
+		this, 
+		this.scale.width / 2, 
+		statsTextObject.y + statsTextObject.displayHeight + 64,
+		"Start",
+		this.prepareStart
+	);
 	playButton.y += playButton.spriteObject.displayHeight / 2; // container has not setOrigin method
 	this.add.existing(playButton);
 	this.objects.push(playButton);
-
   }
 
   update() {

@@ -82,14 +82,12 @@ export class GameScene extends Phaser.Scene {
     this.add.existing(this.rejectButtonObject);
     this.objects.push(this.rejectButtonObject);
     
-    
-
     this.scoreTextObject =  this.add.text(576, 32 + 56, this.score, {fontFamily: "Tengoku", fontSize:36, color: "#0E0F23", align: "right"}).setOrigin(1, 1).setDepth(2);
 
     this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR_BACKGROUND).setOrigin(0).setDepth(2);
     this.progressBarObject = this.add.image(this.scale.width / 4 - 512 / 2, 96, ASSET_KEYS.PROGRESS_BAR).setOrigin(0).setDepth(2);
 
-    this.miniRestartButtonObject = new MiniRestartButton(this, 64, 32);
+    this.miniRestartButtonObject = new MiniRestartButton(this, 64, 32, this.prepareRestart);
     this.add.existing(this.miniRestartButtonObject);
     this.objects.push(this.miniRestartButtonObject);
   }

@@ -167,13 +167,14 @@ export class RejectButton extends Phaser.GameObjects.Container {
 }
 
 
-export class RestartButton extends Phaser.GameObjects.Container {
+export class GenericButton extends Phaser.GameObjects.Container {
 	MAX_SCALE = 1.05;
 	LERP = 0.2;
 
-	constructor(scene, x, y) {
+	constructor(scene, x, y, text, fn) {
 		super(scene, x, y);
 		this.scene = scene;
+		this.fn = fn
 
 		this.hovered = false;
 
@@ -185,7 +186,7 @@ export class RestartButton extends Phaser.GameObjects.Container {
 		this.textObject = scene.add.text(
 			0, 
 			0, 
-			"Restart", 
+			text, 
 			{
 				fontFamily: "Tengoku", 
 				fontSize: 48, 
@@ -208,7 +209,7 @@ export class RestartButton extends Phaser.GameObjects.Container {
 	press() {
 		this.disableInteractive();
 
-		this.scene.prepareRestart();
+		this.fn.call(this.scene);
 	}
 }
 
@@ -218,9 +219,10 @@ export class MiniRestartButton extends Phaser.GameObjects.Container {
 	pressed = false;
 	frozen = false;
 
-	constructor(scene, x, y) {
+	constructor(scene, x, y, fn) {
 		super(scene, x, y);
 		this.scene = scene;
+		this.fn = fn
 
 		this.backgroundSpriteObject = scene.add.image(0, 0, ASSET_KEYS.RESTART_MINI_BUTTON_BACKGROUND).setOrigin(0, 0).setInteractive();
 		this.backgroundSpriteObject.on('pointerdown', () => this.pressed = true);
@@ -239,58 +241,13 @@ export class MiniRestartButton extends Phaser.GameObjects.Container {
 				this.frozen = true;
 				this.pressed = false;
 				this.disableInteractive();
-				this.scene.prepareRestart();
+				this.fn.call(this.scene);
 			}
 		}
 		else if (!this.frozen) {
 			this.progress = Math.max(0.0, this.progress - 0.01);
 		}
 		this.fillSpriteObject.setCrop(0, 0, 0.1 + 56 * this.progress * 0.85, 56);
-	}
-}
-
-
-export class PlayButton extends Phaser.GameObjects.Container {
-	MAX_SCALE = 1.05;
-	LERP = 0.2;
-	hovered = false;
-
-	constructor(scene, x, y) {
-		super(scene, x, y);
-		this.scene = scene;
-
-		this.spriteObject = scene.add.image(0, 0, ASSET_KEYS.GENERIC_BUTTON).setScale(1 , 1).setInteractive();
-		this.spriteObject.on('pointerover', () => this.hovered = true);
-		this.spriteObject.on('pointerout', () => this.hovered = false);
-		this.spriteObject.on('pointerdown', () => this.press());
-
-		this.textObject = scene.add.text(
-			0, 
-			0, 
-			"Play", 
-			{
-				fontFamily: "Tengoku", 
-				fontSize: 48, 
-				color: "#FFFFFF",
-			}
-		).setOrigin(0.5);
-
-		this.add([this.spriteObject, this.textObject]);
-	}
-
-	update() {
-		if (this.hovered) {
-			this.setScale((this.MAX_SCALE - this.scale) * this.LERP + this.scale);
-		}
-		else {
-			this.setScale((1 - this.scale) * this.LERP + this.scale);
-		}
-	}
-
-	press() {
-		this.disableInteractive();
-
-		this.scene.prepareStart();
 	}
 }
 
@@ -408,9 +365,10 @@ export class RuleList extends Phaser.GameObjects.Container {
 	held = false;
 	holdOriginY = 0;
 
-	constructor(scene, x, y) {
+	constructor(scene, x, y, tutorial = false) {
 		super(scene, x, y);
 		this.scene = scene;
+		this.tutorial = tutorial
 
 		this.textObject = this.scene.add.rexBBCodeText(
 			0, 
@@ -564,15 +522,17 @@ export class RuleList extends Phaser.GameObjects.Container {
 	get text() {
 		let result 
 		
-		if (this.ruleCount < 3) {
-			result = 	"INSTRUCTIONS"
-						+ "\n------------"
-						+ "\n1. Follow the first rule from bottom to top that applies."
-						+ "\n2. New rules will be added to the bottom of this list. "
-						+ "\n3. The timer starts after you choose correctly. Get a high score!\n\n";
+		if (!this.tutorial && this.ruleCount < 3) {
+			result = "The timer starts after you choose correctly. Get a high score!\n\n";
 		}
 		else {
-			result = "";
+			result = "TUTORIAL MODE"
+						+ "\n------------"
+						+ "\nWelcome to the tutorial!"
+						+ "\n1. Follow the first rule from bottom to top that applies."
+						+ "\n2. New rules will be added to the bottom of this list."
+						+ "\n3. In tutorial mode, there is no timer."
+						+ "\n4. Hold the top-left button once you are ready.\n\n";
 		}
 
 		for (let i = 0; i < this.ruleCount; i++) {
