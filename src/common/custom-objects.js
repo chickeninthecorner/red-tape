@@ -252,7 +252,7 @@ export class MiniRestartButton extends Phaser.GameObjects.Container {
 }
 
 export class Flash extends Phaser.GameObjects.Container {
-	DURATION = 1.25  * 1000;
+	DURATION = 1 * 1000;
 
 	constructor(scene, x, y, type) {
 		super(scene, x, y);
