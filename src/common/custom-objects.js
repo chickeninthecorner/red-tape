@@ -536,10 +536,15 @@ export class RuleList extends Phaser.GameObjects.Container {
 	}
 
 	get text() {
-		let result 
+		let result
 		
-		if (!this.tutorial && this.ruleCount < 3) {
-			result = "The timer starts after you choose correctly. Get a high score!\n\n";
+		if (!this.tutorial) {
+			if (this.ruleCount < 3) {
+				result = "The timer starts after you choose correctly. Get a high score!\n\n";
+			}
+			else {
+				result = "";
+			}
 		}
 		else {
 			result = "TUTORIAL MODE"
